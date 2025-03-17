@@ -1,0 +1,101 @@
+{
+  "app_name": {
+    "message": "Redirector"
+  },
+  "app_description": {
+    "message": "Redirector es una extensión para navegadores que te ayuda a redirigir URLs basado en reglas."
+  },
+  "notification_event": {
+    "message": "Redirigido por Redirector"
+  },
+  "app_configuration": {
+    "message": "Configuración"
+  },
+  "app_enable": {
+    "message": "Habilitar Redirector"
+  },
+  "app_disable": {
+    "message": "Desabilitar Redirector"
+  },
+  "app_redirect_inline": {
+    "message": "Redirigir en la misma pestaña"
+  },
+  "app_redirect_new_tab": {
+    "message": "Redirigir en una nueva pestaña (Abrir)"
+  },
+  "app_notify_event": {
+    "message": "Notificar cuando ocurra una redirección"
+  },
+  "app_rules": {
+    "message": "Reglas"
+  },
+  "app_rule_name": {
+    "message": "Nombre de la regla"
+  },
+  "app_rule_source": {
+    "message": "Fuente URL/Patrón"
+  },
+  "app_rule_destination": {
+    "message": "Destino"
+  },
+  "app_add_rule": {
+    "message": "Agregar regla"
+  },
+  "app_save_data": {
+    "message": "Guardar datos"
+  },
+  "app_rule_header_sort": {
+    "message": "Ordenar"
+  },
+  "app_rule_header_name": {
+    "message": "Nombre"
+  },
+  "app_rule_header_source": {
+    "message": "Fuente"
+  },
+  "app_rule_header_destination": {
+    "message": "Destino"
+  },
+  "app_rule_header_regex": {
+    "message": "Regex"
+  },
+  "app_rule_header_enable": {
+    "message": "Habilitar"
+  },
+  "app_rule_header_delete": {
+    "message": "Eliminar"
+  },
+  "app_reset_data": {
+    "message": "Restablecer configuración predeterminada"
+  },
+  "app_reset_btn": {
+    "message": "Restablecer"
+  },
+  "app_import_data": {
+    "message": "Importar datos de configuración"
+  },
+  "app_import_btn": {
+    "message": "Importar"
+  },
+  "app_export_data": {
+    "message": "Exportar datos de configuración"
+  },
+  "app_clear_rules": {
+    "message": "Limpiar reglas (esto no se puede deshacer)"
+  },
+  "app_clear_rules_btn": {
+    "message": "Limpiar reglas"
+  },
+  "app_import_error": {
+    "message": "Error importando datos de configuración"
+  },
+  "app_import_success": {
+    "message": "Configuración importada con éxito"
+  },
+  "app_saved": {
+    "message": "Configuración guardada"
+  },
+  "app_config_reset": {
+    "message": "La configuración ha sido restablecida"
+  }
+}

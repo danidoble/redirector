@@ -1,0 +1,101 @@
+{
+  "app_name": {
+    "message": "Redirector"
+  },
+  "app_description": {
+    "message": "Redirector is a browser extension that helps you redirect URLs based on rules."
+  },
+  "notification_event": {
+    "message": "Redirected by Redirector"
+  },
+  "app_configuration": {
+    "message": "Configuration"
+  },
+  "app_enable": {
+    "message": "Enable Redirector"
+  },
+  "app_disable": {
+    "message": "Disable Redirector"
+  },
+  "app_redirect_inline": {
+    "message": "Redirect in the same tab"
+  },
+  "app_redirect_new_tab": {
+    "message": "Redirect in a new tab (Open)"
+  },
+  "app_notify_event": {
+    "message": "Notify when a redirect occurs"
+  },
+  "app_rules": {
+    "message": "Rules"
+  },
+  "app_rule_name": {
+    "message": "Name of rule"
+  },
+  "app_rule_source": {
+    "message": "Source URL/Pattern"
+  },
+  "app_rule_destination": {
+    "message": "Destination"
+  },
+  "app_add_rule": {
+    "message": "Add rule"
+  },
+  "app_save_data": {
+    "message": "Save data"
+  },
+  "app_rule_header_sort": {
+    "message": "Sort"
+  },
+  "app_rule_header_name": {
+    "message": "Name"
+  },
+  "app_rule_header_source": {
+    "message": "Source"
+  },
+  "app_rule_header_destination": {
+    "message": "Destination"
+  },
+  "app_rule_header_regex": {
+    "message": "Regex"
+  },
+  "app_rule_header_enable": {
+    "message": "Enable"
+  },
+  "app_rule_header_delete": {
+    "message": "Delete"
+  },
+  "app_reset_data": {
+    "message": "Restore default configuration data"
+  },
+  "app_reset_btn": {
+    "message": "Reset"
+  },
+  "app_import_data": {
+    "message": "Import configuration data"
+  },
+  "app_import_btn": {
+    "message": "Import"
+  },
+  "app_export_data": {
+    "message": "Export configuration data"
+  },
+  "app_clear_rules": {
+    "message": "Clear all rules (this cannot be undone)"
+  },
+  "app_clear_rules_btn": {
+    "message": "Clear rules"
+  },
+  "app_import_error": {
+    "message": "Error importing configuration data"
+  },
+  "app_import_success": {
+    "message": "Configuration imported successfully"
+  },
+  "app_saved": {
+    "message": "Configuration saved"
+  },
+  "app_config_reset": {
+    "message": "Configuration has been reset"
+  }
+}

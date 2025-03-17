@@ -1,0 +1,45 @@
+{
+  "name": "__MSG_app_name__",
+  "description": "__MSG_app_description__",
+  "short_name": "Redirector",
+  "version_name": "v1.0.0",
+  "version": "1.0.0",
+  "default_locale": "en",
+  "manifest_version": 3,
+  "author": "Daniel Sandoval <danidoble>",
+  "homepage_url": "https://github.com/danidoble/redirector",
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "options_page": "src/options.html",
+  "options_ui": {
+    "page": "src/options.html",
+    "open_in_tab": true
+  },
+  "permissions": ["notifications", "storage", "tabs", "background"],
+  "host_permissions": ["http://*/", "https://*/"],
+  "icons": {
+    "16": "img/icon-16.png",
+    "24": "img/icon-24.png",
+    "32": "img/icon-32.png",
+    "48": "img/icon-48.png",
+    "64": "img/icon-64.png",
+    "128": "img/icon-128.png",
+    "256": "img/icon-256.png",
+    "512": "img/icon-512.png"
+  },
+  "action": {
+    "default_icon": {
+      "16": "img/icon-16.png",
+      "24": "img/icon-24.png",
+      "32": "img/icon-32.png",
+      "48": "img/icon-48.png",
+      "64": "img/icon-64.png",
+      "128": "img/icon-128.png",
+      "256": "img/icon-256.png",
+      "512": "img/icon-512.png"
+    },
+    "default_title": "__MSG_app_name__",
+    "default_popup": "src/popup.html"
+  }
+}

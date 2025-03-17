@@ -1,0 +1,17 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes:
+    winter --default,
+    sunset --prefersdark;
+}
+@theme {
+  --font-sans: "Roboto", "sans-serif";
+}
+
+@font-face {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 200 700;
+  font-display: swap;
+  src: url("./Roboto.ttf") format("truetype");
+}
