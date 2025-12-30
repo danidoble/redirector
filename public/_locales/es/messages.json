@@ -1,101 +1,215 @@
 {
-  "app_name": {
-    "message": "Redirector"
-  },
-  "app_description": {
-    "message": "Redirector es una extensión para navegadores que te ayuda a redirigir URLs basado en reglas."
-  },
-  "notification_event": {
-    "message": "Redirigido por Redirector"
-  },
-  "app_configuration": {
-    "message": "Configuración"
-  },
-  "app_enable": {
-    "message": "Habilitar Redirector"
-  },
-  "app_disable": {
-    "message": "Desabilitar Redirector"
-  },
-  "app_redirect_inline": {
-    "message": "Redirigir en la misma pestaña"
-  },
-  "app_redirect_new_tab": {
-    "message": "Redirigir en una nueva pestaña (Abrir)"
-  },
-  "app_notify_event": {
-    "message": "Notificar cuando ocurra una redirección"
-  },
-  "app_rules": {
-    "message": "Reglas"
-  },
-  "app_rule_name": {
-    "message": "Nombre de la regla"
-  },
-  "app_rule_source": {
-    "message": "Fuente URL/Patrón"
-  },
-  "app_rule_destination": {
-    "message": "Destino"
-  },
-  "app_add_rule": {
-    "message": "Agregar regla"
-  },
-  "app_save_data": {
-    "message": "Guardar datos"
-  },
-  "app_rule_header_sort": {
-    "message": "Ordenar"
-  },
-  "app_rule_header_name": {
-    "message": "Nombre"
-  },
-  "app_rule_header_source": {
-    "message": "Fuente"
-  },
-  "app_rule_header_destination": {
-    "message": "Destino"
-  },
-  "app_rule_header_regex": {
-    "message": "Regex"
-  },
-  "app_rule_header_enable": {
-    "message": "Habilitar"
-  },
-  "app_rule_header_delete": {
-    "message": "Eliminar"
-  },
-  "app_reset_data": {
-    "message": "Restablecer configuración predeterminada"
-  },
-  "app_reset_btn": {
-    "message": "Restablecer"
-  },
-  "app_import_data": {
-    "message": "Importar datos de configuración"
-  },
-  "app_import_btn": {
-    "message": "Importar"
-  },
-  "app_export_data": {
-    "message": "Exportar datos de configuración"
-  },
-  "app_clear_rules": {
-    "message": "Limpiar reglas (esto no se puede deshacer)"
-  },
-  "app_clear_rules_btn": {
-    "message": "Limpiar reglas"
-  },
-  "app_import_error": {
-    "message": "Error importando datos de configuración"
-  },
-  "app_import_success": {
-    "message": "Configuración importada con éxito"
-  },
-  "app_saved": {
-    "message": "Configuración guardada"
-  },
-  "app_config_reset": {
-    "message": "La configuración ha sido restablecida"
-  }
+    "app_name": {
+        "message": "Redirector"
+    },
+    "app_description": {
+        "message": "Redirector es una extensión para navegadores que te ayuda a redirigir URLs basado en reglas."
+    },
+    "notification_event": {
+        "message": "Redirigido por Redirector"
+    },
+    "app_configuration": {
+        "message": "Configuración"
+    },
+    "app_enable": {
+        "message": "Habilitar Redirector"
+    },
+    "app_disable": {
+        "message": "Desabilitar Redirector"
+    },
+    "app_redirect_inline": {
+        "message": "Redirigir en la misma pestaña"
+    },
+    "app_redirect_new_tab": {
+        "message": "Redirigir en una nueva pestaña (Abrir)"
+    },
+    "app_notify_event": {
+        "message": "Notificar cuando ocurra una redirección"
+    },
+    "app_rules": {
+        "message": "Reglas"
+    },
+    "app_rule_name": {
+        "message": "Nombre de la regla"
+    },
+    "app_rule_source": {
+        "message": "Fuente URL/Patrón"
+    },
+    "app_rule_destination": {
+        "message": "Destino"
+    },
+    "app_add_rule": {
+        "message": "Agregar regla"
+    },
+    "app_save_data": {
+        "message": "Guardar datos"
+    },
+    "app_rule_header_sort": {
+        "message": "Ordenar"
+    },
+    "app_rule_header_name": {
+        "message": "Nombre"
+    },
+    "app_rule_header_source": {
+        "message": "Fuente"
+    },
+    "app_rule_header_destination": {
+        "message": "Destino"
+    },
+    "app_rule_header_regex": {
+        "message": "Regex"
+    },
+    "app_rule_header_enable": {
+        "message": "Habilitar"
+    },
+    "app_rule_header_delete": {
+        "message": "Eliminar"
+    },
+    "app_reset_data": {
+        "message": "Restablecer configuración predeterminada"
+    },
+    "app_reset_btn": {
+        "message": "Restablecer"
+    },
+    "app_import_data": {
+        "message": "Importar datos de configuración"
+    },
+    "app_import_btn": {
+        "message": "Importar"
+    },
+    "app_export_data": {
+        "message": "Exportar datos de configuración"
+    },
+    "app_clear_rules": {
+        "message": "Limpiar reglas (esto no se puede deshacer)"
+    },
+    "app_clear_rules_btn": {
+        "message": "Limpiar reglas"
+    },
+    "app_import_error": {
+        "message": "Error importando datos de configuración"
+    },
+    "app_import_success": {
+        "message": "Configuración importada con éxito"
+    },
+    "app_saved": {
+        "message": "Configuración guardada"
+    },
+    "app_config_reset": {
+        "message": "La configuración ha sido restablecida"
+    },
+    "app_theme_toogle": {
+        "message": "Alternar tema"
+    },
+    "app_theme_light": {
+        "message": "Claro"
+    },
+    "app_theme_dark": {
+        "message": "Oscuro"
+    },
+    "app_theme_system": {
+        "message": "Sistema"
+    },
+    "app_subtitle": {
+        "message": "Gestor de Redirección de URLs"
+    },
+    "app_settings": {
+        "message": "Configuración"
+    },
+    "app_advanced": {
+        "message": "Avanzado"
+    },
+    "app_general_settings": {
+        "message": "Configuración General"
+    },
+    "app_general_settings_desc": {
+        "message": "Configura el comportamiento de la extensión"
+    },
+    "app_extension_status": {
+        "message": "Estado de la Extensión"
+    },
+    "app_extension_enabled_desc": {
+        "message": "La extensión está activa y redirigiendo URLs"
+    },
+    "app_extension_disabled_desc": {
+        "message": "La extensión está desactivada"
+    },
+    "app_redirect_behavior": {
+        "message": "Comportamiento de Redirección"
+    },
+    "app_notify_event_desc": {
+        "message": "Mostrar notificación cuando se redirija una URL"
+    },
+    "app_import_export": {
+        "message": "Importar / Exportar"
+    },
+    "app_import_export_desc": {
+        "message": "Guarda o carga tu configuración"
+    },
+    "app_export_btn": {
+        "message": "Exportar"
+    },
+    "app_saving": {
+        "message": "Guardando..."
+    },
+    "app_rules_desc": {
+        "message": "Gestiona las reglas de redirección de URLs"
+    },
+    "app_no_rules": {
+        "message": "No hay reglas configuradas"
+    },
+    "app_no_rules_desc": {
+        "message": "Haz clic en \"Agregar Regla\" para comenzar"
+    },
+    "app_reset_data_desc": {
+        "message": "Restaurar la configuración predeterminada de la extensión"
+    },
+    "app_reset_confirm_title": {
+        "message": "¿Estás seguro?"
+    },
+    "app_reset_confirm_desc": {
+        "message": "Esta acción restablecerá todas las configuraciones y reglas a sus valores predeterminados. Esta acción no se puede deshacer."
+    },
+    "app_cancel": {
+        "message": "Cancelar"
+    },
+    "app_clear_rules_desc": {
+        "message": "Eliminar todas las reglas de redirección configuradas"
+    },
+    "app_clear_confirm_title": {
+        "message": "¿Eliminar todas las reglas?"
+    },
+    "app_clear_confirm_desc": {
+        "message": "Esta acción eliminará todas las reglas de redirección. La configuración general se mantendrá. Esta acción no se puede deshacer."
+    },
+    "app_rule_added": {
+        "message": "Regla agregada"
+    },
+    "app_rule_deleted": {
+        "message": "Regla eliminada"
+    },
+    "app_export_success": {
+        "message": "Configuración exportada correctamente"
+    },
+    "app_export_error": {
+        "message": "Error al exportar la configuración"
+    },
+    "app_import_no_file": {
+        "message": "Por favor selecciona un archivo"
+    },
+    "app_load_error": {
+        "message": "Error al cargar la configuración"
+    },
+    "app_save_error": {
+        "message": "Error al guardar la configuración"
+    },
+    "app_reset_error": {
+        "message": "Error al reiniciar la configuración"
+    },
+    "app_clear_success": {
+        "message": "Reglas eliminadas correctamente"
+    },
+    "app_clear_error": {
+        "message": "Error al eliminar las reglas"
+    }
 }

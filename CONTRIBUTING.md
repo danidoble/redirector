@@ -51,10 +51,10 @@ your changes do and why they should be merged.
 
 ## Pull Request Guidelines
 
-* Make sure your pull request is targeting the main branch.
-* Include a clear description of what your changes do and any relevant details.
-* Ensure that your changes follow the project's coding style.
-* If your PR is related to an issue, please reference the issue number.
+- Make sure your pull request is targeting the main branch.
+- Include a clear description of what your changes do and any relevant details.
+- Ensure that your changes follow the project's coding style.
+- If your PR is related to an issue, please reference the issue number.
 
 ## Code of Conduct
 
@@ -65,6 +65,6 @@ considerate to others.
 
 If you encounter any issues or have questions, feel free to open an issue or reach out to the maintainers.
 
--------------
+---
 
 Thank you for contributing to Redirector! We appreciate your help in making this project better.

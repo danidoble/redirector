@@ -1,101 +1,215 @@
 {
-  "app_name": {
-    "message": "Redirector"
-  },
-  "app_description": {
-    "message": "Redirector is a browser extension that helps you redirect URLs based on rules."
-  },
-  "notification_event": {
-    "message": "Redirected by Redirector"
-  },
-  "app_configuration": {
-    "message": "Configuration"
-  },
-  "app_enable": {
-    "message": "Enable Redirector"
-  },
-  "app_disable": {
-    "message": "Disable Redirector"
-  },
-  "app_redirect_inline": {
-    "message": "Redirect in the same tab"
-  },
-  "app_redirect_new_tab": {
-    "message": "Redirect in a new tab (Open)"
-  },
-  "app_notify_event": {
-    "message": "Notify when a redirect occurs"
-  },
-  "app_rules": {
-    "message": "Rules"
-  },
-  "app_rule_name": {
-    "message": "Name of rule"
-  },
-  "app_rule_source": {
-    "message": "Source URL/Pattern"
-  },
-  "app_rule_destination": {
-    "message": "Destination"
-  },
-  "app_add_rule": {
-    "message": "Add rule"
-  },
-  "app_save_data": {
-    "message": "Save data"
-  },
-  "app_rule_header_sort": {
-    "message": "Sort"
-  },
-  "app_rule_header_name": {
-    "message": "Name"
-  },
-  "app_rule_header_source": {
-    "message": "Source"
-  },
-  "app_rule_header_destination": {
-    "message": "Destination"
-  },
-  "app_rule_header_regex": {
-    "message": "Regex"
-  },
-  "app_rule_header_enable": {
-    "message": "Enable"
-  },
-  "app_rule_header_delete": {
-    "message": "Delete"
-  },
-  "app_reset_data": {
-    "message": "Restore default configuration data"
-  },
-  "app_reset_btn": {
-    "message": "Reset"
-  },
-  "app_import_data": {
-    "message": "Import configuration data"
-  },
-  "app_import_btn": {
-    "message": "Import"
-  },
-  "app_export_data": {
-    "message": "Export configuration data"
-  },
-  "app_clear_rules": {
-    "message": "Clear all rules (this cannot be undone)"
-  },
-  "app_clear_rules_btn": {
-    "message": "Clear rules"
-  },
-  "app_import_error": {
-    "message": "Error importing configuration data"
-  },
-  "app_import_success": {
-    "message": "Configuration imported successfully"
-  },
-  "app_saved": {
-    "message": "Configuration saved"
-  },
-  "app_config_reset": {
-    "message": "Configuration has been reset"
-  }
+    "app_name": {
+        "message": "Redirector"
+    },
+    "app_description": {
+        "message": "Redirector is a browser extension that helps you redirect URLs based on rules."
+    },
+    "notification_event": {
+        "message": "Redirected by Redirector"
+    },
+    "app_configuration": {
+        "message": "Configuration"
+    },
+    "app_enable": {
+        "message": "Enable Redirector"
+    },
+    "app_disable": {
+        "message": "Disable Redirector"
+    },
+    "app_redirect_inline": {
+        "message": "Redirect in the same tab"
+    },
+    "app_redirect_new_tab": {
+        "message": "Redirect in a new tab (Open)"
+    },
+    "app_notify_event": {
+        "message": "Notify when a redirect occurs"
+    },
+    "app_rules": {
+        "message": "Rules"
+    },
+    "app_rule_name": {
+        "message": "Name of rule"
+    },
+    "app_rule_source": {
+        "message": "Source URL/Pattern"
+    },
+    "app_rule_destination": {
+        "message": "Destination"
+    },
+    "app_add_rule": {
+        "message": "Add rule"
+    },
+    "app_save_data": {
+        "message": "Save data"
+    },
+    "app_rule_header_sort": {
+        "message": "Sort"
+    },
+    "app_rule_header_name": {
+        "message": "Name"
+    },
+    "app_rule_header_source": {
+        "message": "Source"
+    },
+    "app_rule_header_destination": {
+        "message": "Destination"
+    },
+    "app_rule_header_regex": {
+        "message": "Regex"
+    },
+    "app_rule_header_enable": {
+        "message": "Enable"
+    },
+    "app_rule_header_delete": {
+        "message": "Delete"
+    },
+    "app_reset_data": {
+        "message": "Restore default configuration data"
+    },
+    "app_reset_btn": {
+        "message": "Reset"
+    },
+    "app_import_data": {
+        "message": "Import configuration data"
+    },
+    "app_import_btn": {
+        "message": "Import"
+    },
+    "app_export_data": {
+        "message": "Export configuration data"
+    },
+    "app_clear_rules": {
+        "message": "Clear all rules (this cannot be undone)"
+    },
+    "app_clear_rules_btn": {
+        "message": "Clear rules"
+    },
+    "app_import_error": {
+        "message": "Error importing configuration data"
+    },
+    "app_import_success": {
+        "message": "Configuration imported successfully"
+    },
+    "app_saved": {
+        "message": "Configuration saved"
+    },
+    "app_config_reset": {
+        "message": "Configuration has been reset"
+    },
+    "app_theme_toogle": {
+        "message": "Toggle theme"
+    },
+    "app_theme_light": {
+        "message": "Light"
+    },
+    "app_theme_dark": {
+        "message": "Dark"
+    },
+    "app_theme_system": {
+        "message": "System"
+    },
+    "app_subtitle": {
+        "message": "URL Redirection Manager"
+    },
+    "app_settings": {
+        "message": "Settings"
+    },
+    "app_advanced": {
+        "message": "Advanced"
+    },
+    "app_general_settings": {
+        "message": "General Settings"
+    },
+    "app_general_settings_desc": {
+        "message": "Configure the extension behavior"
+    },
+    "app_extension_status": {
+        "message": "Extension Status"
+    },
+    "app_extension_enabled_desc": {
+        "message": "The extension is active and redirecting URLs"
+    },
+    "app_extension_disabled_desc": {
+        "message": "The extension is disabled"
+    },
+    "app_redirect_behavior": {
+        "message": "Redirect Behavior"
+    },
+    "app_notify_event_desc": {
+        "message": "Show notification when a URL is redirected"
+    },
+    "app_import_export": {
+        "message": "Import / Export"
+    },
+    "app_import_export_desc": {
+        "message": "Save or load your configuration"
+    },
+    "app_export_btn": {
+        "message": "Export"
+    },
+    "app_saving": {
+        "message": "Saving..."
+    },
+    "app_rules_desc": {
+        "message": "Manage URL redirection rules"
+    },
+    "app_no_rules": {
+        "message": "No rules configured"
+    },
+    "app_no_rules_desc": {
+        "message": "Click \"Add Rule\" to get started"
+    },
+    "app_reset_data_desc": {
+        "message": "Restore the extension's default configuration"
+    },
+    "app_reset_confirm_title": {
+        "message": "Are you sure?"
+    },
+    "app_reset_confirm_desc": {
+        "message": "This action will reset all settings and rules to their default values. This action cannot be undone."
+    },
+    "app_cancel": {
+        "message": "Cancel"
+    },
+    "app_clear_rules_desc": {
+        "message": "Delete all configured redirection rules"
+    },
+    "app_clear_confirm_title": {
+        "message": "Delete all rules?"
+    },
+    "app_clear_confirm_desc": {
+        "message": "This action will delete all redirection rules. General settings will be preserved. This action cannot be undone."
+    },
+    "app_rule_added": {
+        "message": "Rule added"
+    },
+    "app_rule_deleted": {
+        "message": "Rule deleted"
+    },
+    "app_export_success": {
+        "message": "Configuration exported successfully"
+    },
+    "app_export_error": {
+        "message": "Error exporting configuration"
+    },
+    "app_import_no_file": {
+        "message": "Please select a file"
+    },
+    "app_load_error": {
+        "message": "Error loading configuration"
+    },
+    "app_save_error": {
+        "message": "Error saving configuration"
+    },
+    "app_reset_error": {
+        "message": "Error resetting configuration"
+    },
+    "app_clear_success": {
+        "message": "Rules deleted successfully"
+    },
+    "app_clear_error": {
+        "message": "Error deleting rules"
+    }
 }
