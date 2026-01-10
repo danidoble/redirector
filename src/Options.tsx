@@ -1,32 +1,19 @@
 import { ModeToggle } from './components/mode-toggle';
 import { useEffect, useRef, useState } from 'react';
-import { ReactSortable } from 'react-sortablejs';
 import { toast } from 'sonner';
 import {
-    GripVertical,
-    Trash2,
-    Plus,
-    Save,
-    Download,
-    Upload,
+
     RotateCcw,
     XCircle,
-    CheckCircle2,
-    AlertCircle
+    Trash2
 } from 'lucide-react';
 import { t } from './utils/i18n';
 import { getChrome } from './utils/chrome-mock';
-import type { Options as OptionsType, Rule, RedirectorMessage } from './types/background';
+import type { Options as OptionsType, Rule, RedirectorMessage, RuleGroup } from './types/background';
 
 import { Button } from './components/ui/button';
-import { Input } from './components/ui/input';
-import { Label } from './components/ui/label';
-import { Switch } from './components/ui/switch';
-import { Textarea } from './components/ui/textarea';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
-import { Separator } from './components/ui/separator';
-import { Badge } from './components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs';
+import { Badge } from './components/ui/badge';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -38,9 +25,23 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger
 } from './components/ui/alert-dialog';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger
+} from './components/ui/tooltip';
 
-interface ConfigState extends OptionsType {
+import { SettingsTab } from './components/tabs/SettingsTab';
+import { GroupsTab } from './components/tabs/GroupsTab';
+import { RulesTab } from './components/tabs/RulesTab';
+import { MiniMode } from './components/tabs/MiniMode';
+import { Footer } from './components/Footer';
+import { Donation } from './components/Donation';
+
+export interface ConfigState extends OptionsType {
     rules: Rule[];
+    groups?: RuleGroup[];
 }
 
 export function Options({ mini = false }: { mini?: boolean }) {
@@ -51,7 +52,8 @@ export function Options({ mini = false }: { mini?: boolean }) {
         enabled: true,
         openNewTab: false,
         notifyEvent: false,
-        rules: []
+        rules: [],
+        groups: []
     });
 
     /**
@@ -141,7 +143,11 @@ export function Options({ mini = false }: { mini?: boolean }) {
                     rules: newConfig.rules.map((rule: Omit<Rule, 'id'>) => ({
                         ...rule,
                         id: crypto.randomUUID()
-                    }))
+                    })),
+                    groups: newConfig.groups?.map((group: Omit<RuleGroup, 'id'>) => ({
+                        ...group,
+                        id: crypto.randomUUID()
+                    })) || []
                 };
 
                 setConfig(safeConfig);
@@ -176,7 +182,8 @@ export function Options({ mini = false }: { mini?: boolean }) {
                     enabled: data.options.enabled,
                     openNewTab: data.options.openNewTab,
                     notifyEvent: data.options.notifyEvent,
-                    rules: data.options.rules || []
+                    rules: data.options.rules || [],
+                    groups: data.options.groups || []
                 });
             }
         } catch (error) {
@@ -277,29 +284,87 @@ export function Options({ mini = false }: { mini?: boolean }) {
     };
 
     /**
-     * Guarda la configuración actual
+     * Internal function to save configuration with options
      */
-    const saveData = async (): Promise<void> => {
-        setSaving(true);
+    const saveConfigInternal = async (configToSave: ConfigState, showToast: boolean = true): Promise<void> => {
+        if (showToast) setSaving(true);
         try {
             // Filtrar reglas válidas (con src y dest no vacíos)
-            const validRules = config.rules.filter(rule => rule.src.trim() !== '' && rule.dest.trim() !== '');
+            const validRules = configToSave.rules.filter(rule => rule.src.trim() !== '' && rule.dest.trim() !== '');
+            const newConfig = { ...configToSave, rules: validRules };
 
-            const newConfig = { ...config, rules: validRules };
             setConfig(newConfig);
-
             await chromeApi.storage.sync.set({ options: newConfig });
             await chromeApi.runtime.sendMessage({
                 type: 'syncOptions',
                 options: newConfig
             });
 
-            toast.success(t('app_saved') || 'Configuración guardada correctamente');
+            if (showToast) {
+                toast.success(t('app_saved') || 'Configuración guardada correctamente');
+            }
         } catch (error) {
             console.error('Error saving config:', error);
-            toast.error(t('app_save_error') || 'Error al guardar la configuración');
+            if (showToast) {
+                toast.error(t('app_save_error') || 'Error al guardar la configuración');
+            }
         } finally {
-            setSaving(false);
+            if (showToast) setSaving(false);
+        }
+    };
+
+    /**
+     * Guarda la configuración actual (Public wrapper for manual save)
+     */
+    const saveData = async (): Promise<void> => {
+        await saveConfigInternal(config, true);
+    };
+
+    const updateRule = (index: number, updates: Partial<Rule>, save: boolean = false): void => {
+        // Calculate new state first
+        const newHelper = () => {
+             const newRules = [...config.rules];
+             newRules[index] = { ...newRules[index], ...updates };
+             return { ...config, rules: newRules };
+        };
+
+        const newConfig = newHelper();
+        setConfig(newConfig);
+
+        if (save) {
+             saveConfigInternal(newConfig, false);
+        }
+    };
+
+    const addGroup = (): void => {
+        const newGroup: RuleGroup = {
+            id: crypto.randomUUID(),
+            name: t('app_new_group') || 'New Group',
+            color: '#3b82f6',
+            enabled: true,
+            collapsed: false
+        };
+        setConfig({
+            ...config,
+            groups: [...(config.groups || []), newGroup]
+        });
+        toast.success(t('app_group_added') || 'Grupo agregado');
+    };
+
+    const deleteGroup = (id: string): void => {
+        const newGroups = (config.groups || []).filter(g => g.id !== id);
+        const newRules = config.rules.map(r => r.groupId === id ? { ...r, groupId: undefined } : r);
+        setConfig({ ...config, groups: newGroups, rules: newRules });
+        toast.success(t('app_group_deleted') || 'Grupo eliminado');
+    };
+
+    const updateGroup = (id: string, updates: Partial<RuleGroup>, save: boolean = false): void => {
+        const newGroups = (config.groups || []).map(g => g.id === id ? { ...g, ...updates } : g);
+        const newConfig = { ...config, groups: newGroups };
+        setConfig(newConfig);
+        
+        if (save) {
+            saveConfigInternal(newConfig, false);
         }
     };
 
@@ -343,374 +408,132 @@ export function Options({ mini = false }: { mini?: boolean }) {
         }
     };
 
-    return (
-        <div className={`min-h-screen bg-background ${mini ? 'pt-4' : ''}`}>
-            {/* Header */}
-            <header className="border-b">
-                <div className="container max-w-7xl mx-auto px-4 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <img src="/img/icon-64.png" alt="Redirector" className="w-12 h-12" />
-                            <div>
-                                <h1 className="text-2xl sm:text-3xl font-bold">{t('app_name') || 'Redirector'}</h1>
-                                <p className="text-sm text-muted-foreground">
-                                    {t('app_subtitle') || 'URL Redirection Manager'}
-                                </p>
-                            </div>
-                        </div>
-                        <ModeToggle />
-                    </div>
+    if (mini) {
+        return (
+            <TooltipProvider>
+                <div className="flex flex-col h-full bg-background">
+                    <MiniMode
+                        config={config}
+                        updateGroup={updateGroup}
+                        updateRule={updateRule}
+                    />
                 </div>
-            </header>
+            </TooltipProvider>
+        );
+    }
 
-            {/* Main Content */}
-            <main className="container max-w-7xl mx-auto px-4 py-8 space-y-8">
-                {/* Tabs Navigation */}
-                <Tabs defaultValue="settings" className="w-full">
-                    <TabsList className="grid w-full grid-cols-3 lg:w-auto">
-                        <TabsTrigger value="settings">{t('app_settings') || 'Configuración'}</TabsTrigger>
-                        <TabsTrigger value="rules">
-                            {t('app_rules') || 'Reglas'}
-                            <Badge variant="secondary" className="ml-2">
-                                {config.rules.length}
-                            </Badge>
-                        </TabsTrigger>
-                        <TabsTrigger value="advanced">{t('app_advanced') || 'Avanzado'}</TabsTrigger>
-                    </TabsList>
-
-                    {/* Settings Tab */}
-                    <TabsContent value="settings" className="space-y-6 mt-6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <CheckCircle2 className="w-5 h-5" />
-                                    {t('app_general_settings') || 'Configuración General'}
-                                </CardTitle>
-                                <CardDescription>
-                                    {t('app_general_settings_desc') || 'Configura el comportamiento de la extensión'}
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-6">
-                                {/* Extension Enabled */}
-                                <div className="flex items-center justify-between space-x-4">
-                                    <div className="flex-1 space-y-1">
-                                        <Label htmlFor="enabled" className="text-base font-medium">
-                                            {t('app_extension_status') || 'Estado de la Extensión'}
-                                        </Label>
-                                        <p className="text-sm text-muted-foreground">
-                                            {config.enabled
-                                                ? t('app_extension_enabled_desc') ||
-                                                  'La extensión está activa y redirigiendo URLs'
-                                                : t('app_extension_disabled_desc') || 'La extensión está desactivada'}
-                                        </p>
-                                    </div>
-                                    <Switch
-                                        id="enabled"
-                                        checked={config.enabled}
-                                        onCheckedChange={handleEnabledChange}
-                                    />
+    return (
+        <TooltipProvider>
+            <div className={`flex flex-col min-h-screen bg-background ${mini ? 'pt-4' : ''}`}>
+                {/* Header */}
+                <header className="shrink-0 border-b">
+                    <div className="container max-w-7xl mx-auto px-4 py-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <img src="/img/icon-64.png" alt="Redirector" className="w-12 h-12" />
+                                <div>
+                                    <h1 className="text-2xl sm:text-3xl font-bold">{t('app_name') || 'Redirector'}</h1>
+                                    <p className="text-sm text-muted-foreground">
+                                        {t('app_subtitle') || 'URL Redirection Manager'}
+                                    </p>
                                 </div>
-
-                                <Separator />
-
-                                {/* Open in New Tab */}
-                                <div className="flex items-center justify-between space-x-4">
-                                    <div className="flex-1 space-y-1">
-                                        <Label htmlFor="newTab" className="text-base font-medium">
-                                            {t('app_redirect_behavior') || 'Comportamiento de Redirección'}
-                                        </Label>
-                                        <p className="text-sm text-muted-foreground">
-                                            {config.openNewTab
-                                                ? t('app_redirect_new_tab') || 'Abrir redireciones en nueva pestaña'
-                                                : t('app_redirect_inline') || 'Redireccionar en la misma pestaña'}
-                                        </p>
-                                    </div>
-                                    <Switch id="newTab" checked={config.openNewTab} onCheckedChange={handleTabChange} />
-                                </div>
-
-                                <Separator />
-
-                                {/* Notifications */}
-                                <div className="flex items-center justify-between space-x-4">
-                                    <div className="flex-1 space-y-1">
-                                        <Label htmlFor="notifications" className="text-base font-medium">
-                                            {t('app_notify_event') || 'Notificaciones'}
-                                        </Label>
-                                        <p className="text-sm text-muted-foreground">
-                                            {t('app_notify_event_desc') ||
-                                                'Mostrar notificación cuando se redirija una URL'}
-                                        </p>
-                                    </div>
-                                    <Switch
-                                        id="notifications"
-                                        checked={config.notifyEvent}
-                                        onCheckedChange={handleNotifyChange}
-                                    />
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* Import/Export Card */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Download className="w-5 h-5" />
-                                    {t('app_import_export') || 'Importar / Exportar'}
-                                </CardTitle>
-                                <CardDescription>
-                                    {t('app_import_export_desc') || 'Guarda o carga tu configuración'}
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    {/* Import */}
-                                    <div className="space-y-2">
-                                        <Label htmlFor="import-file">
-                                            {t('app_import_data') || 'Importar Configuración'}
-                                        </Label>
-                                        <div className="flex gap-2">
-                                            <Input
-                                                id="import-file"
-                                                type="file"
-                                                accept="application/json"
-                                                ref={inputFile}
-                                                className="flex-1"
-                                            />
-                                            <Button
-                                                variant="secondary"
-                                                size="icon"
-                                                disabled={saving}
-                                                onClick={importConfig}
-                                            >
-                                                <Upload className="w-4 h-4" />
-                                            </Button>
-                                        </div>
-                                    </div>
-
-                                    {/* Export */}
-                                    <div className="space-y-2">
-                                        <Label>{t('app_export_data') || 'Exportar Configuración'}</Label>
-                                        <Button
-                                            variant="outline"
-                                            className="w-full"
-                                            disabled={saving}
-                                            onClick={exportConfig}
-                                        >
-                                            <Download className="w-4 h-4 mr-2" />
-                                            {t('app_export_btn') || 'Exportar'}
-                                        </Button>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* Save Button */}
-                        <div className="flex justify-end">
-                            <Button size="lg" disabled={saving} onClick={saveData} className="min-w-32">
-                                <Save className="w-4 h-4 mr-2" />
-                                {saving ? t('app_saving') || 'Guardando...' : t('app_save_data') || 'Guardar Cambios'}
-                            </Button>
-                        </div>
-                    </TabsContent>
-
-                    {/* Rules Tab */}
-                    <TabsContent value="rules" className="space-y-6 mt-6">
-                        <Card>
-                            <CardHeader>
-                                <div className="flex items-center justify-between">
+                            </div>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
                                     <div>
-                                        <CardTitle className="flex items-center gap-2">
-                                            <AlertCircle className="w-5 h-5" />
-                                            {t('app_rules') || 'Reglas de Redirección'}
-                                        </CardTitle>
-                                        <CardDescription>
-                                            {t('app_rules_desc') || 'Gestiona las reglas de redirección de URLs'}
-                                        </CardDescription>
+                                        <ModeToggle />
                                     </div>
-                                    <Button onClick={addRule} disabled={saving}>
-                                        <Plus className="w-4 h-4 mr-2" />
-                                        {t('app_add_rule') || 'Agregar Regla'}
-                                    </Button>
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                {config.rules.length === 0 ? (
-                                    <div className="text-center py-12 text-muted-foreground">
-                                        <AlertCircle className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                                        <p className="text-lg font-medium">
-                                            {t('app_no_rules') || 'No hay reglas configuradas'}
-                                        </p>
-                                        <p className="text-sm mt-2">
-                                            {t('app_no_rules_desc') || 'Haz clic en "Agregar Regla" para comenzar'}
-                                        </p>
-                                    </div>
-                                ) : (
-                                    <div className="space-y-4">
-                                        <ReactSortable
-                                            handle=".drag-handle"
-                                            list={config.rules.map(r => ({ ...r, id: r.id || crypto.randomUUID() }))}
-                                            setList={newRules => setConfig({ ...config, rules: newRules as Rule[] })}
-                                            className="space-y-3"
-                                            tag="div"
-                                        >
-                                            {config.rules.map((rule, index) => (
-                                                <Card key={rule.id || index} className="overflow-hidden py-2 sm:py-6">
-                                                    <CardContent className="p-4">
-                                                        <div className="grid gap-4">
-                                                            <div className="flex flex-col sm:flex-row items-start gap-3">
-                                                              <div className='sm:hidden inline-flex items-center gap-2 justify-between w-full'>
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    className="drag-handle cursor-grab mt-1 shrink-0"
-                                                                >
-                                                                    <GripVertical className="w-4 h-4" />
-                                                                </Button>
-                                                                <Button
-                                                                    variant="destructive"
-                                                                    size="icon"
-                                                                    onClick={() => handleRuleDelete(index)}
-                                                                    className="shrink-0"
-                                                                >
-                                                                    <Trash2 className="w-4 h-4" />
-                                                                </Button>
-                                                              </div>
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    className="drag-handle cursor-grab mt-1 shrink-0 hidden sm:inline-flex"
-                                                                >
-                                                                    <GripVertical className="w-4 h-4" />
-                                                                </Button>
-
-                                                                <div className="sm:flex-1 w-full grid gap-4">
-                                                                    <div className="grid gap-2">
-                                                                        <Label
-                                                                            htmlFor={`src-${index}`}
-                                                                            className="text-sm font-medium"
-                                                                        >
-                                                                            {t('app_rule_header_source') ||
-                                                                                'URL Origen'}{' '}
-                                                                            <span className="text-destructive">*</span>
-                                                                        </Label>
-                                                                        <Textarea
-                                                                            id={`src-${index}`}
-                                                                            placeholder="https://example.com/ or ^https?://(.+)\.example\.com/(.*)$"
-                                                                            value={rule.src || ''}
-                                                                            onChange={e =>
-                                                                                handleRuleSrc(e.target.value, index)
-                                                                            }
-                                                                            className="font-mono text-sm min-h-20 resize-y"
-                                                                            rows={2}
-                                                                        />
-                                                                    </div>
-
-                                                                    <div className="grid gap-2">
-                                                                        <Label
-                                                                            htmlFor={`dest-${index}`}
-                                                                            className="text-sm font-medium"
-                                                                        >
-                                                                            {t('app_rule_header_destination') ||
-                                                                                'URL Destino'}{' '}
-                                                                            <span className="text-destructive">*</span>
-                                                                        </Label>
-                                                                        <Textarea
-                                                                            id={`dest-${index}`}
-                                                                            placeholder="https://redirect.com/ or https://new.example.com/$1/$2"
-                                                                            value={rule.dest || ''}
-                                                                            onChange={e =>
-                                                                                handleRuleDest(e.target.value, index)
-                                                                            }
-                                                                            className="font-mono text-sm min-h-20 resize-y"
-                                                                            rows={2}
-                                                                        />
-                                                                    </div>
-
-                                                                    <div className="flex flex-wrap gap-4">
-                                                                        <div className="flex items-center space-x-2">
-                                                                            <Switch
-                                                                                id={`regex-${index}`}
-                                                                                checked={rule.regex}
-                                                                                onCheckedChange={checked =>
-                                                                                    handleRuleRegex(checked, index)
-                                                                                }
-                                                                            />
-                                                                            <Label
-                                                                                htmlFor={`regex-${index}`}
-                                                                                className="text-sm cursor-pointer"
-                                                                            >
-                                                                                {t('app_rule_header_regex') || 'RegEx'}
-                                                                            </Label>
-                                                                        </div>
-
-                                                                        <div className="flex items-center space-x-2">
-                                                                            <Switch
-                                                                                id={`enabled-${index}`}
-                                                                                checked={rule.enabled}
-                                                                                onCheckedChange={checked =>
-                                                                                    handleRuleEnabled(checked, index)
-                                                                                }
-                                                                            />
-                                                                            <Label
-                                                                                htmlFor={`enabled-${index}`}
-                                                                                className="text-sm cursor-pointer"
-                                                                            >
-                                                                                {t('app_rule_header_enable') ||
-                                                                                    'Habilitada'}
-                                                                            </Label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <Button
-                                                                    variant="destructive"
-                                                                    size="icon"
-                                                                    onClick={() => handleRuleDelete(index)}
-                                                                    className="shrink-0 hidden sm:inline-flex"
-                                                                >
-                                                                    <Trash2 className="w-4 h-4" />
-                                                                </Button>
-                                                            </div>
-                                                        </div>
-                                                    </CardContent>
-                                                </Card>
-                                            ))}
-                                        </ReactSortable>
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
-
-                        {/* Save Button */}
-                        <div className="flex justify-end">
-                            <Button size="lg" disabled={saving} onClick={saveData} className="min-w-32">
-                                <Save className="w-4 h-4 mr-2" />
-                                {saving ? t('app_saving') || 'Guardando...' : t('app_save_data') || 'Guardar Cambios'}
-                            </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{t('app_theme_toogle') || 'Toggle theme'}</p>
+                                </TooltipContent>
+                            </Tooltip>
                         </div>
-                    </TabsContent>
+                    </div>
+                </header>
+                <Donation className="shrink-0 px-4 mb-0 mt-4" />
 
-                    {/* Advanced Tab */}
-                    <TabsContent value="advanced" className="space-y-6 mt-6">
-                        <div className="grid gap-6 md:grid-cols-2">
-                            {/* Reset Configuration */}
-                            <Card className="border-destructive/50">
-                                <CardHeader>
-                                    <CardTitle className="flex items-center gap-2 text-destructive">
-                                        <RotateCcw className="w-5 h-5" />
-                                        {t('app_reset_data') || 'Restablecer Configuración'}
-                                    </CardTitle>
-                                    <CardDescription>
+                {/* Main Content */}
+                <main className="flex-grow container max-w-7xl mx-auto px-4 py-8 space-y-8">
+                    {/* Tabs Navigation */}
+                    <Tabs defaultValue="settings" className="w-full">
+                        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:w-auto">
+                            <TabsTrigger value="settings">{t('app_settings') || 'Configuración'}</TabsTrigger>
+                            <TabsTrigger value="rules">
+                                {t('app_rules') || 'Reglas'}
+                                <Badge variant="secondary" className="ml-2">
+                                    {config.rules.length}
+                                </Badge>
+                            </TabsTrigger>
+                            <TabsTrigger value="groups">
+                                    {t('app_groups') || 'Grupos'}
+                            </TabsTrigger>
+                            <TabsTrigger value="advanced">{t('app_advanced') || 'Avanzado'}</TabsTrigger>
+                        </TabsList>
+
+                        {/* Settings Tab */}
+                        <TabsContent value="settings">
+                            <SettingsTab
+                                config={config}
+                                saving={saving}
+                                inputFile={inputFile}
+                                handleEnabledChange={handleEnabledChange}
+                                handleTabChange={handleTabChange}
+                                handleNotifyChange={handleNotifyChange}
+                                importConfig={importConfig}
+                                exportConfig={exportConfig}
+                                saveData={saveData}
+                            />
+                        </TabsContent>
+
+                        {/* Rules Tab */}
+                        <TabsContent value="rules">
+                            <RulesTab
+                                config={config}
+                                saving={saving}
+                                setConfig={setConfig}
+                                addRule={addRule}
+                                handleRuleSrc={handleRuleSrc}
+                                handleRuleDest={handleRuleDest}
+                                handleRuleRegex={handleRuleRegex}
+                                handleRuleEnabled={handleRuleEnabled}
+                                handleRuleDelete={handleRuleDelete}
+                                updateRule={updateRule}
+                                updateGroup={updateGroup}
+                                saveData={saveData}
+                            />
+                        </TabsContent>
+
+                        {/* Groups Tab */}
+                        <TabsContent value="groups">
+                            <GroupsTab
+                                config={config}
+                                saving={saving}
+                                addGroup={addGroup}
+                                updateGroup={updateGroup}
+                                deleteGroup={deleteGroup}
+                                saveData={saveData}
+                            />
+                        </TabsContent>
+
+                        {/* Advanced Tab */}
+                        <TabsContent value="advanced" className="space-y-6 mt-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Reset Data */}
+                                <div className="p-6 border rounded-lg bg-card text-card-foreground shadow-sm border-destructive">
+                                    <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+                                        <RotateCcw className="w-5 h-5 text-destructive" />
+                                        {t('app_reset_data') || 'Restablecer configuración predeterminada'}
+                                    </h3>
+                                    <p className="text-sm text-muted-foreground mb-4">
                                         {t('app_reset_data_desc') ||
                                             'Restaurar la configuración predeterminada de la extensión'}
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
+                                    </p>
                                     <AlertDialog>
                                         <AlertDialogTrigger asChild>
-                                            <Button variant="destructive" className="w-full" disabled={saving}>
+                                            <Button variant="destructive" disabled={saving} className='w-full'>
                                                 <RotateCcw className="w-4 h-4 mr-2" />
-                                                {t('app_reset_btn') || 'Restablecer Todo'}
+                                                {t('app_reset_btn') || 'Restablecer'}
                                             </Button>
                                         </AlertDialogTrigger>
                                         <AlertDialogContent>
@@ -724,37 +547,32 @@ export function Options({ mini = false }: { mini?: boolean }) {
                                                 </AlertDialogDescription>
                                             </AlertDialogHeader>
                                             <AlertDialogFooter>
-                                                <AlertDialogCancel>{t('app_cancel') || 'Cancelar'}</AlertDialogCancel>
-                                                <AlertDialogAction
-                                                    onClick={resetData}
-                                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                                >
+                                                <AlertDialogCancel disabled={saving}>
+                                                    {t('app_cancel') || 'Cancelar'}
+                                                </AlertDialogCancel>
+                                                <AlertDialogAction onClick={resetData} disabled={saving}>
                                                     {t('app_reset_btn') || 'Restablecer'}
                                                 </AlertDialogAction>
                                             </AlertDialogFooter>
                                         </AlertDialogContent>
                                     </AlertDialog>
-                                </CardContent>
-                            </Card>
+                                </div>
 
-                            {/* Clear Rules */}
-                            <Card className="border-destructive/50">
-                                <CardHeader>
-                                    <CardTitle className="flex items-center gap-2 text-destructive">
-                                        <XCircle className="w-5 h-5" />
-                                        {t('app_clear_rules') || 'Limpiar Reglas'}
-                                    </CardTitle>
-                                    <CardDescription>
+                                {/* Clear Rules */}
+                                <div className="p-6 border rounded-lg bg-card text-card-foreground shadow-sm border-destructive">
+                                    <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+                                        <Trash2 className="w-5 h-5 text-destructive" />
+                                        {t('app_clear_rules') || 'Limpiar reglas (esto no se puede deshacer)'}
+                                    </h3>
+                                    <p className="text-sm text-muted-foreground mb-4">
                                         {t('app_clear_rules_desc') ||
                                             'Eliminar todas las reglas de redirección configuradas'}
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
+                                    </p>
                                     <AlertDialog>
                                         <AlertDialogTrigger asChild>
-                                            <Button variant="destructive" className="w-full" disabled={saving}>
+                                            <Button variant="destructive" disabled={saving} className='w-full'>
                                                 <XCircle className="w-4 h-4 mr-2" />
-                                                {t('app_clear_rules_btn') || 'Limpiar Todas las Reglas'}
+                                                {t('app_clear_rules_btn') || 'Limpiar reglas'}
                                             </Button>
                                         </AlertDialogTrigger>
                                         <AlertDialogContent>
@@ -768,29 +586,22 @@ export function Options({ mini = false }: { mini?: boolean }) {
                                                 </AlertDialogDescription>
                                             </AlertDialogHeader>
                                             <AlertDialogFooter>
-                                                <AlertDialogCancel>{t('app_cancel') || 'Cancelar'}</AlertDialogCancel>
-                                                <AlertDialogAction
-                                                    onClick={clearRules}
-                                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                                >
-                                                    {t('app_clear_rules_btn') || 'Limpiar Reglas'}
+                                                <AlertDialogCancel disabled={saving}>
+                                                    {t('app_cancel') || 'Cancelar'}
+                                                </AlertDialogCancel>
+                                                <AlertDialogAction onClick={clearRules} disabled={saving}>
+                                                    {t('app_clear_rules_btn') || 'Limpiar reglas'}
                                                 </AlertDialogAction>
                                             </AlertDialogFooter>
                                         </AlertDialogContent>
                                     </AlertDialog>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    </TabsContent>
-                </Tabs>
-            </main>
-
-            {/* Footer */}
-            <footer className="border-t mt-12">
-                <div className="container max-w-7xl mx-auto px-4 py-6 text-center text-sm text-muted-foreground">
-                    Created by <a href="https://github.com/danidoble" target='_blank'>danidoble</a>. © {new Date().getFullYear()}
-                </div>
-            </footer>
-        </div>
+                                </div>
+                            </div>
+                        </TabsContent>
+                    </Tabs>
+                </main>
+                <Footer className="shrink-0" />
+            </div>
+        </TooltipProvider>
     );
 }

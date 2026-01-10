@@ -211,5 +211,86 @@
     },
     "app_clear_error": {
         "message": "Error al eliminar las reglas"
+    },
+    "app_groups": {
+        "message": "Grupos"
+    },
+    "app_groups_desc": {
+        "message": "Organiza tus reglas en grupos"
+    },
+    "app_add_group": {
+        "message": "Agregar Grupo"
+    },
+    "app_group_added": {
+        "message": "Grupo agregado"
+    },
+    "app_group_deleted": {
+        "message": "Grupo eliminado"
+    },
+    "app_rule_group": {
+        "message": "Grupo"
+    },
+    "app_rule_header_decode": {
+        "message": "Decodificar"
+    },
+    "app_rule_name_placeholder": {
+        "message": "Nombre de la Regla"
+    },
+    "app_group_none": {
+        "message": "Ninguno"
+    },
+    "app_no_groups": {
+        "message": "No se encontraron grupos"
+    },
+    "app_new_group": {
+        "message": "Nuevo Grupo"
+    },
+    "app_select_group": {
+        "message": "Seleccionar grupo"
+    },
+    "app_group_name_placeholder": {
+        "message": "Nombre del Grupo"
+    },
+    "app_search_placeholder": {
+        "message": "Buscar reglas..."
+    },
+    "app_rule_color": {
+        "message": "Color"
+    },
+    "app_rule_label_enabled": {
+        "message": "Habilitado"
+    },
+    "tooltip_settings": {
+        "message": "Abrir Configuración"
+    },
+    "tooltip_expand": {
+        "message": "Expandir"
+    },
+    "tooltip_collapse": {
+        "message": "Colapsar"
+    },
+    "tooltip_enable_group": {
+        "message": "Habilitar Grupo"
+    },
+    "tooltip_disable_group": {
+        "message": "Deshabilitar Grupo"
+    },
+    "tooltip_enable_rule": {
+        "message": "Habilitar Regla"
+    },
+    "tooltip_disable_rule": {
+        "message": "Deshabilitar Regla"
+    },
+    "tooltip_delete": {
+        "message": "Eliminar"
+    },
+    "app_view_grouped": {
+        "message": "Vista Agrupada"
+    },
+    "app_view_list": {
+        "message": "Vista de Lista"
+    },
+    "app_buy_coffee": {
+        "message": "Cómprame un café"
     }
 }

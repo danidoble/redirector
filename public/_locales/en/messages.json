@@ -211,5 +211,86 @@
     },
     "app_clear_error": {
         "message": "Error deleting rules"
+    },
+    "app_groups": {
+        "message": "Groups"
+    },
+    "app_groups_desc": {
+        "message": "Organize your rules into groups"
+    },
+    "app_add_group": {
+        "message": "Add Group"
+    },
+    "app_group_added": {
+        "message": "Group added"
+    },
+    "app_group_deleted": {
+        "message": "Group deleted"
+    },
+    "app_rule_group": {
+        "message": "Group"
+    },
+    "app_rule_header_decode": {
+        "message": "Decode"
+    },
+    "app_rule_name_placeholder": {
+        "message": "Rule Name"
+    },
+    "app_group_none": {
+        "message": "None"
+    },
+    "app_no_groups": {
+        "message": "No groups found"
+    },
+    "app_new_group": {
+        "message": "New Group"
+    },
+    "app_select_group": {
+        "message": "Select group"
+    },
+    "app_group_name_placeholder": {
+        "message": "Group Name"
+    },
+    "app_search_placeholder": {
+        "message": "Search rules..."
+    },
+    "app_rule_color":{
+        "message": "Color"
+    },
+    "app_rule_label_enabled": {
+        "message": "Enabled"
+    },
+    "tooltip_settings": {
+        "message": "Open Settings"
+    },
+    "tooltip_expand": {
+        "message": "Expand"
+    },
+    "tooltip_collapse": {
+        "message": "Collapse"
+    },
+    "tooltip_enable_group": {
+        "message": "Enable Group"
+    },
+    "tooltip_disable_group": {
+        "message": "Disable Group"
+    },
+    "tooltip_enable_rule": {
+        "message": "Enable Rule"
+    },
+    "tooltip_disable_rule": {
+        "message": "Disable Rule"
+    },
+    "tooltip_delete": {
+        "message": "Delete"
+    },
+    "app_view_grouped": {
+        "message": "Grouped View"
+    },
+    "app_view_list": {
+        "message": "List View"
+    },
+    "app_buy_coffee": {
+        "message": "Buy me a coffee"
     }
 }

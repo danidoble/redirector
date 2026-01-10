@@ -11,30 +11,43 @@ const defaultSettings: Settings = {
                 enabled: false,
                 regex: true,
                 src: '^https?://(?!localhost|bar.test)([^/]+)(.*)$',
-                dest: 'https://localhost/'
+                dest: 'https://localhost/',
+                groupId: 'default'
             },
             {
                 id: null,
                 enabled: false,
                 regex: true,
                 src: '^https?://(?!localhost|foo.test)([^/]+)(.*)$',
-                dest: 'http://localhost/'
+                dest: 'http://localhost/',
+                groupId: 'default'
             },
             {
                 id: null,
                 enabled: true,
                 regex: false,
                 src: 'https://example.com/',
-                dest: 'https://example.org/'
+                dest: 'https://example.org/',
+                groupId: 'default'
             },
             {
                 id: null,
                 enabled: false,
                 regex: true,
                 src: 'https?://example.org/',
-                dest: 'https://google.com/'
+                dest: 'https://google.com/',
+                groupId: 'default'
             }
-        ]
+        ],
+        groups: [
+            {
+                id: 'default',
+                name: 'Default',
+                color: '#3b82f6', // blue-500
+                enabled: true,
+                collapsed: false
+            }
+        ] 
     }
 };
 
@@ -43,6 +56,7 @@ const config: Config = {
     openNewTab: false,
     notifyEvent: true,
     rules: [],
+    groups: [],
     lastTabId: 0
 };
 
@@ -73,10 +87,37 @@ const handleInstall = async (): Promise<void> => {
 const handleUpdate = async (): Promise<void> => {
     const data = (await chrome.storage.sync.get('options')) as StorageData;
 
+    // First install or deleted storage
     if (!data.options) {
         assignRuleIds(defaultSettings.options.rules);
         await chrome.storage.sync.set(defaultSettings);
         return;
+    }
+
+    // Migration: If groups are missing or empty, inject the default group AND move rules to it
+    if (!data.options.groups || data.options.groups.length === 0) {
+         // Create a merged object
+         const migratedOptions: Options = {
+             ...data.options,
+             groups: defaultSettings.options.groups
+         };
+         
+         const migratedSettings: Settings = {
+             options: migratedOptions
+         };
+         
+         // If there are existing rules, safeguard them and assign them to default group
+         if (data.options.rules && data.options.rules.length > 0) {
+             migratedSettings.options.rules = data.options.rules.map(r => ({
+                 ...r,
+                 id: r.id || crypto.randomUUID(), // Ensure ID exists
+                 groupId: 'default' // Assign to default group
+             }));
+         }
+
+         await chrome.storage.sync.set(migratedSettings);
+         console.log('Migrated settings: Added default group and moved rules to it');
+         return;
     }
 
     if (data.options?.rules?.length > 0) {
@@ -153,7 +194,8 @@ const syncOptions = (options: Options): void => {
         enabled: options.enabled,
         openNewTab: options.openNewTab,
         notifyEvent: options.notifyEvent,
-        rules: options.rules
+        rules: options.rules,
+        groups: options.groups || []
     });
 };
 
@@ -196,7 +238,8 @@ const loadOptions = async (): Promise<void> => {
         Object.assign(config, {
             openNewTab: data.options.openNewTab,
             notifyEvent: data.options.notifyEvent,
-            rules: data.options.rules
+            rules: data.options.rules,
+            groups: data.options.groups || []
         });
     }
 };
@@ -210,7 +253,12 @@ const matchUrl = (url: string): string | false => {
     for (const rule of config.rules) {
         if (!rule.enabled) continue;
 
-        const { src, dest, regex } = rule;
+        if (rule.groupId && config.groups) {
+             const group = config.groups.find(g => g.id === rule.groupId);
+             if (group && !group.enabled) continue;
+        }
+
+        const { src, dest, regex, shouldDecode } = rule;
 
         if (!regex) {
             if (url === src) {
@@ -222,9 +270,20 @@ const matchUrl = (url: string): string | false => {
         try {
             const pattern = new RegExp(src);
             if (pattern.test(url)) {
-                const newUrl = url.replace(pattern, dest);
-                if (url !== newUrl) {
-                    return newUrl;
+                if(shouldDecode) {
+                   const newUrl = url.replace(pattern, (...args) => {
+                        return dest.replace(/\$(\d+)/g, (m, nStr) => {
+                             const n = parseInt(nStr, 10);
+                             const val = args[n];
+                             return val !== undefined ? decodeURIComponent(val) : m;
+                        });
+                   });
+                   if (url !== newUrl) return newUrl;
+                } else {
+                    const newUrl = url.replace(pattern, dest);
+                    if (url !== newUrl) {
+                        return newUrl;
+                    }
                 }
             }
         } catch (error) {

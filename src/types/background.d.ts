@@ -4,6 +4,19 @@ export interface Rule {
     regex: boolean;
     src: string;
     dest: string;
+    name?: string;
+    groupId?: string;
+    color?: string;
+    shouldDecode?: boolean;
+    collapsed?: boolean;
+}
+
+export interface RuleGroup {
+    id: string;
+    name: string;
+    color: string;
+    enabled: boolean;
+    collapsed?: boolean;
 }
 
 export interface Options {
@@ -11,6 +24,7 @@ export interface Options {
     openNewTab: boolean;
     notifyEvent: boolean;
     rules: Rule[];
+    groups?: RuleGroup[];
 }
 
 export interface Settings {
