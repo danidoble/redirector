@@ -38,6 +38,7 @@ import { RulesTab } from './components/tabs/RulesTab';
 import { MiniMode } from './components/tabs/MiniMode';
 import { Footer } from './components/Footer';
 import { Donation } from './components/Donation';
+import { HelpDialog } from './components/HelpDialog';
 
 export interface ConfigState extends OptionsType {
     rules: Rule[];
@@ -228,44 +229,7 @@ export function Options({ mini = false }: { mini?: boolean }) {
         setConfig({ ...config, notifyEvent: checked });
     };
 
-    const addRule = (): void => {
-        const newRule: Rule = {
-            id: crypto.randomUUID(),
-            enabled: true,
-            regex: false,
-            src: '',
-            dest: ''
-        };
-        setConfig({
-            ...config,
-            rules: [...config.rules, newRule]
-        });
-        toast.success(t('app_rule_added') || 'Regla agregada');
-    };
 
-    const handleRuleSrc = (value: string, index: number): void => {
-        setConfig(prev => {
-            const newRules = [...prev.rules];
-            newRules[index] = { ...newRules[index], src: value };
-            return { ...prev, rules: newRules };
-        });
-    };
-
-    const handleRuleDest = (value: string, index: number): void => {
-        setConfig(prev => {
-            const newRules = [...prev.rules];
-            newRules[index] = { ...newRules[index], dest: value };
-            return { ...prev, rules: newRules };
-        });
-    };
-
-    const handleRuleRegex = (checked: boolean, index: number): void => {
-        setConfig(prev => {
-            const newRules = [...prev.rules];
-            newRules[index] = { ...newRules[index], regex: checked };
-            return { ...prev, rules: newRules };
-        });
-    };
 
     const handleRuleEnabled = (checked: boolean, index: number): void => {
         setConfig(prev => {
@@ -282,6 +246,7 @@ export function Options({ mini = false }: { mini?: boolean }) {
         }));
         toast.success(t('app_rule_deleted') || 'Regla eliminada');
     };
+
 
     /**
      * Internal function to save configuration with options
@@ -438,16 +403,28 @@ export function Options({ mini = false }: { mini?: boolean }) {
                                     </p>
                                 </div>
                             </div>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <div>
-                                        <ModeToggle />
-                                    </div>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>{t('app_theme_toogle') || 'Toggle theme'}</p>
-                                </TooltipContent>
-                            </Tooltip>
+                             <div className="flex gap-2">
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <div>
+                                            <HelpDialog />
+                                        </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>{t('help_title') || 'Help'}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <div>
+                                            <ModeToggle />
+                                        </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>{t('app_theme_toogle') || 'Toggle theme'}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                             </div>
                         </div>
                     </div>
                 </header>
@@ -492,10 +469,6 @@ export function Options({ mini = false }: { mini?: boolean }) {
                                 config={config}
                                 saving={saving}
                                 setConfig={setConfig}
-                                addRule={addRule}
-                                handleRuleSrc={handleRuleSrc}
-                                handleRuleDest={handleRuleDest}
-                                handleRuleRegex={handleRuleRegex}
                                 handleRuleEnabled={handleRuleEnabled}
                                 handleRuleDelete={handleRuleDelete}
                                 updateRule={updateRule}

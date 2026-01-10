@@ -1,7 +1,10 @@
+export type RuleMode = 'static' | 'regex' | 'wildcard' | 'url-pattern';
+
 export interface Rule {
     id: string | null;
     enabled: boolean;
-    regex: boolean;
+    mode: RuleMode; // Replaces 'regex'
+    regex?: boolean; // Deprecated, kept for backward compat during migration
     src: string;
     dest: string;
     name?: string;
@@ -9,6 +12,7 @@ export interface Rule {
     color?: string;
     shouldDecode?: boolean;
     collapsed?: boolean;
+    testUrl?: string; // For testing in UI
 }
 
 export interface RuleGroup {

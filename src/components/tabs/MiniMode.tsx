@@ -130,7 +130,7 @@ export function MiniMode({
                 {config.rules.filter(r => !r.groupId).length > 0 && (
                     <Card className="p-2">
                         <div className="font-medium mb-2 text-muted-foreground flex justify-between items-center">
-                            <span>Ungrouped</span>
+                            <span>{t('app_group_ungrouped') || 'Ungrouped'}</span>
                             <Badge variant="secondary">{config.rules.filter(r => !r.groupId).length}</Badge>
                         </div>
                         <div className="space-y-2">
@@ -159,7 +159,7 @@ export function MiniMode({
 
                 {config.rules.length === 0 && (!config.groups || config.groups.length === 0) && (
                     <div className="text-center text-muted-foreground py-8">
-                        No rules found.
+                        {t('app_no_rules_found') || 'No rules found.'}
                     </div>
                 )}
             </main>

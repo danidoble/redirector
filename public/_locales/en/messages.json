@@ -290,7 +290,133 @@
     "app_view_list": {
         "message": "List View"
     },
+    "app_save_changes": {
+        "message": "Save Changes"
+    },
+    "app_edit_rule": {
+        "message": "Edit Rule"
+    },
+    "app_rule_modal_desc": {
+        "message": "Configure the redirection rule details below."
+    },
+    "app_search_no_results": {
+        "message": "No rules match your search."
+    },
+    "app_group_ungrouped": {
+        "message": "Ungrouped"
+    },
+    "app_rule_untitled": {
+        "message": "Untitled Rule"
+    },
+    "placeholder_source": {
+        "message": "https://example.com/old"
+    },
+    "placeholder_destination": {
+        "message": "https://example.com/new"
+    },
+    "app_rule_mode": {
+        "message": "Mode:"
+    },
+    "mode_static": {
+        "message": "Static"
+    },
+    "mode_wildcard": {
+        "message": "Wildcard"
+    },
+    "mode_url_pattern": {
+        "message": "URL Pattern"
+    },
+    "mode_regex": {
+        "message": "Regex"
+    },
+    "app_test_match": {
+        "message": "Test Rule Match"
+    },
+    "placeholder_test_url": {
+        "message": "Enter test URL..."
+    },
+    "app_match": {
+        "message": "MATCH"
+    },
+    "app_no_match": {
+        "message": "NO MATCH"
+    },
+    "app_test_result": {
+        "message": "Result:"
+    },
+    "app_save": {
+        "message": "Save"
+    },
+    "app_no_rules_found": {
+        "message": "No rules found."
+    },
+    "help_title": {
+        "message": "Redirector Help"
+    },
+    "help_desc": {
+        "message": "Learn how to create powerful redirection rules using different matching modes."
+    },
+    "help_static_title": {
+        "message": "Exact Match"
+    },
+    "help_static_desc": {
+        "message": "The simplest mode. It matches the source URL exactly as written."
+    },
+    "help_wildcard_title": {
+        "message": "Simple Patterns"
+    },
+    "help_wildcard_desc": {
+        "message": "Use '*' to match any text. Each '*' value is available as $1, $2, etc., in the destination."
+    },
+    "help_pattern_title": {
+        "message": "Named Parameters"
+    },
+    "help_pattern_desc": {
+        "message": "Capture specific parts of the URL using ':name'. Use {{name}} in the destination to insert them."
+    },
+    "help_regex_title": {
+        "message": "Regular Expressions"
+    },
+    "help_regex_desc": {
+        "message": "Full power of JavaScript Regular Expressions. Use capture groups () and $1, $2 to reference them."
+    },
+    "help_example_result": {
+        "message": "Example result"
+    },
+    "help_input_rule": {
+        "message": "Input (Source URL)"
+    },
+    "help_destination_rule": {
+        "message": "Redirect to (Destination)"
+    },
+    "app_close": {
+        "message": "Close"
+    },
     "app_buy_coffee": {
         "message": "Buy me a coffee"
+    },
+    "help_decode_title": {
+        "message": "Decoding Parameters"
+    },
+    "help_decode_desc": {
+        "message": "When enabled, captured values (like $1 or {{name}}) will be decoded (URI unescaped) before being inserted into the destination."
+    },
+    "help_decode_example_desc": {
+        "message": "For example, if the URL contains '%3A%2F%2F', decoding will convert it to '://'."
+    },
+    "help_groups_title": {
+        "message": "Rule Groups"
+    },
+    "help_groups_desc": {
+        "message": "Groups allow you to organize your rules. Disabling a group will disable all rules within it."
+    },
+    "help_tips_title": {
+        "message": "General Tips"
+    },
+    "help_tips_order": {
+        "message": "Order matters: Rules are processed from top to bottom. The first rule that matches will be applied."
+    },
+    "help_tips_testing": {
+        "message": "Test your rules: Use the 'Test URL' field in the rule editor to verify your patterns before saving."
     }
 }

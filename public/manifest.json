@@ -9,7 +9,8 @@
     "author": "Daniel Sandoval <danidoble>",
     "homepage_url": "https://github.com/danidoble/redirector",
     "background": {
-        "service_worker": "src/background.js"
+        "service_worker": "src/background.js",
+        "type": "module"
     },
     "options_page": "src/options.html",
     "options_ui": {

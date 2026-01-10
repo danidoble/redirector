@@ -47,7 +47,7 @@ export function GroupsTab({
                                 {t('app_groups') || 'Grupos de Reglas'}
                             </CardTitle>
                             <CardDescription>
-                                {t('app_groups_desc') || 'Organiza tus reglas en grupos con colores'}
+                                {t('app_groups_desc') || 'Organize your rules into groups with colors'}
                             </CardDescription>
                         </div>
                         <Button onClick={addGroup} disabled={saving}>
@@ -57,6 +57,7 @@ export function GroupsTab({
                     </div>
                 </CardHeader>
                 <CardContent>
+
                     {(!config.groups || config.groups.length === 0) ? (
                         <div className="text-center py-12 text-muted-foreground">
                             <p className="text-lg font-medium">{t('app_no_groups') || 'No groups found'}</p>
@@ -120,7 +121,7 @@ export function GroupsTab({
             <div className="flex justify-end">
                 <Button size="lg" disabled={saving} onClick={saveData} className="min-w-32">
                     <Save className="w-4 h-4 mr-2" />
-                    {saving ? t('app_saving') || 'Guardando...' : t('app_save_data') || 'Guardar Cambios'}
+                    {saving ? t('app_saving') || 'Saving...' : t('app_save_changes') || 'Save Changes'}
                 </Button>
             </div>
         </div>

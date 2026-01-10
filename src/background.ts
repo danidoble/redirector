@@ -1,4 +1,5 @@
 import type { Rule, Options, Settings, Config, RedirectorMessage, StorageData } from './types/background';
+import { matchRule } from './utils/matcher';
 
 const defaultSettings: Settings = {
     options: {
@@ -9,6 +10,8 @@ const defaultSettings: Settings = {
             {
                 id: null,
                 enabled: false,
+                name: 'Local Dev (HTTPS)',
+                mode: 'regex',
                 regex: true,
                 src: '^https?://(?!localhost|bar.test)([^/]+)(.*)$',
                 dest: 'https://localhost/',
@@ -17,6 +20,8 @@ const defaultSettings: Settings = {
             {
                 id: null,
                 enabled: false,
+                name: 'Local Dev (HTTP)',
+                mode: 'regex',
                 regex: true,
                 src: '^https?://(?!localhost|foo.test)([^/]+)(.*)$',
                 dest: 'http://localhost/',
@@ -25,6 +30,8 @@ const defaultSettings: Settings = {
             {
                 id: null,
                 enabled: true,
+                name: 'Example Redirect',
+                mode: 'static',
                 regex: false,
                 src: 'https://example.com/',
                 dest: 'https://example.org/',
@@ -33,6 +40,8 @@ const defaultSettings: Settings = {
             {
                 id: null,
                 enabled: false,
+                name: 'Google Redirect',
+                mode: 'regex',
                 regex: true,
                 src: 'https?://example.org/',
                 dest: 'https://google.com/',
@@ -111,6 +120,7 @@ const handleUpdate = async (): Promise<void> => {
              migratedSettings.options.rules = data.options.rules.map(r => ({
                  ...r,
                  id: r.id || crypto.randomUUID(), // Ensure ID exists
+                 name: r.name || 'My Rule',
                  groupId: 'default' // Assign to default group
              }));
          }
@@ -130,11 +140,35 @@ const handleUpdate = async (): Promise<void> => {
                 )
         );
 
+        // Migrate existing rules to include 'mode' and 'name' if missing
+        const migratedExistingRules = existingRules.map(r => {
+             const updates: Partial<Rule> = {};
+             if (!r.mode) {
+                  updates.mode = r.regex ? 'regex' : 'static';
+             }
+             if (!r.name) {
+                  updates.name = 'My Rule';
+             }
+             return { ...r, ...updates };
+        });
+
+        // Migrate new rules (should be correct already, but safe guard)
+        const migratedNewRules = newRules.map(r => {
+            const updates: Partial<Rule> = {};
+            if (!r.mode) {
+                 updates.mode = r.regex ? 'regex' : 'static';
+            }
+            if (!r.name) {
+                 updates.name = 'My Rule';
+            }
+            return { ...r, ...updates };
+       });
+
         const mergedData: Settings = {
             ...syncData,
             options: {
                 ...syncData.options!,
-                rules: [...existingRules, ...newRules]
+                rules: [...migratedExistingRules, ...migratedNewRules]
             }
         };
 
@@ -258,37 +292,8 @@ const matchUrl = (url: string): string | false => {
              if (group && !group.enabled) continue;
         }
 
-        const { src, dest, regex, shouldDecode } = rule;
-
-        if (!regex) {
-            if (url === src) {
-                return dest;
-            }
-            continue;
-        }
-
-        try {
-            const pattern = new RegExp(src);
-            if (pattern.test(url)) {
-                if(shouldDecode) {
-                   const newUrl = url.replace(pattern, (...args) => {
-                        return dest.replace(/\$(\d+)/g, (m, nStr) => {
-                             const n = parseInt(nStr, 10);
-                             const val = args[n];
-                             return val !== undefined ? decodeURIComponent(val) : m;
-                        });
-                   });
-                   if (url !== newUrl) return newUrl;
-                } else {
-                    const newUrl = url.replace(pattern, dest);
-                    if (url !== newUrl) {
-                        return newUrl;
-                    }
-                }
-            }
-        } catch (error) {
-            console.error(`Error en la expresión regular de la regla: ${src}`, error);
-        }
+        const result = matchRule(rule, url);
+        if (result) return result;
     }
 
     return false;

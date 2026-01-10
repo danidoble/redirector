@@ -290,7 +290,133 @@
     "app_view_list": {
         "message": "Vista de Lista"
     },
-    "app_buy_coffee": {
+    "app_save_changes": {
+        "message": "Guardar Cambios"
+    },
+    "app_edit_rule": {
+        "message": "Editar Regla"
+    },
+    "app_rule_modal_desc": {
+        "message": "Configura los detalles de la regla de redirección abajo."
+    },
+    "app_search_no_results": {
+        "message": "No hay reglas que coincidan con tu búsqueda."
+    },
+    "app_group_ungrouped": {
+        "message": "Sin grupo"
+    },
+    "app_rule_untitled": {
+        "message": "Regla sin título"
+    },
+    "placeholder_source": {
+        "message": "https://example.com/antigua"
+    },
+    "placeholder_destination": {
+        "message": "https://example.com/nueva"
+    },
+    "app_rule_mode": {
+        "message": "Modo:"
+    },
+    "mode_static": {
+        "message": "Estática"
+    },
+    "mode_wildcard": {
+        "message": "Comodín"
+    },
+    "mode_url_pattern": {
+        "message": "Patrón de URL"
+    },
+    "mode_regex": {
+        "message": "Regex"
+    },
+    "app_test_match": {
+        "message": "Probar Coincidencia de Regla"
+    },
+    "placeholder_test_url": {
+        "message": "Introduce la URL de prueba..."
+    },
+    "app_match": {
+        "message": "COINCIDE"
+    },
+    "app_no_match": {
+        "message": "NO COINCIDE"
+    },
+    "app_test_result": {
+        "message": "Resultado:"
+    },
+    "app_save": {
+        "message": "Guardar"
+    },
+    "app_no_rules_found": {
+        "message": "No se encontraron reglas."
+    },
+    "help_title": {
+        "message": "Ayuda de Redirector"
+    },
+    "help_desc": {
+        "message": "Aprende a crear potentes reglas de redirección usando diferentes modos de coincidencia."
+    },
+    "help_static_title": {
+        "message": "Coincidencia Exacta"
+    },
+    "help_static_desc": {
+        "message": "El modo más simple. Coincide exactamente con la URL de origen tal como está escrita."
+    },
+    "help_wildcard_title": {
+        "message": "Patrones Simples"
+    },
+    "help_wildcard_desc": {
+        "message": "Usa '*' para coincidir con cualquier texto. Cada valor '*' está disponible como $1, $2, etc., en el destino."
+    },
+    "help_pattern_title": {
+        "message": "Parámetros con Nombre"
+    },
+    "help_pattern_desc": {
+        "message": "Captura partes específicas de la URL usando ':nombre'. Usa {{nombre}} en el destino para insertarlas."
+    },
+    "help_regex_title": {
+        "message": "Expresiones Regulares"
+    },
+    "help_regex_desc": {
+        "message": "Todo el poder de las Expresiones Regulares de JavaScript. Usa grupos de captura () y $1, $2 para referenciarlos."
+    },
+    "help_example_result": {
+        "message": "Resultado de ejemplo"
+    },
+    "help_input_rule": {
+        "message": "Entrada (URL de Origen)"
+    },
+    "help_destination_rule": {
+        "message": "Redirigir a (Destino)"
+    },
+    "app_close": {
+        "message": "Cerrar"
+    },
+    "app_buy_coffee":{
         "message": "Cómprame un café"
+    },
+    "help_decode_title": {
+        "message": "Decodificación de Parámetros"
+    },
+    "help_decode_desc": {
+        "message": "Cuando está activado, los valores capturados (como $1 o {{nombre}}) serán decodificados (se quitará el escape URI) antes de insertarse en el destino."
+    },
+    "help_decode_example_desc": {
+        "message": "Por ejemplo, si la URL contiene '%3A%2F%2F', la decodificación lo convertirá en '://'."
+    },
+    "help_groups_title": {
+        "message": "Grupos de Reglas"
+    },
+    "help_groups_desc": {
+        "message": "Los grupos te permiten organizar tus reglas. Desactivar un grupo desactivará todas las reglas dentro de él."
+    },
+    "help_tips_title": {
+        "message": "Consejos Generales"
+    },
+    "help_tips_order": {
+        "message": "El orden importa: Las reglas se procesan de arriba hacia abajo. Se aplicará la primera regla que coincida."
+    },
+    "help_tips_testing": {
+        "message": "Prueba tus reglas: Usa el campo 'Probar URL' en el editor de reglas para verificar tus patrones antes de guardar."
     }
 }

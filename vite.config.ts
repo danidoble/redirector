@@ -23,10 +23,9 @@ export default defineConfig({
                     if (chunkInfo.name === 'background') {
                         return 'src/background.js';
                     }
-                    return 'src/[name].js';
+                    return 'assets/[name]-[hash].js';
                 },
-                // Para background, no crear chunks separados
-                manualChunks: undefined
+                // manualChunks: undefined // Para background, no crear chunks separados
             }
         },
         outDir: 'dist',
