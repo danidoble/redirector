@@ -35,9 +35,7 @@ export interface Settings {
     options: Options;
 }
 
-export interface Config extends Options {
-    lastTabId: number;
-}
+export interface Config extends Options {}
 
 export interface SyncOptionsMessage {
     type: 'syncOptions';

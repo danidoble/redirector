@@ -24,7 +24,7 @@ export default defineConfig({
                         return 'src/background.js';
                     }
                     return 'assets/[name]-[hash].js';
-                },
+                }
                 // manualChunks: undefined // Para background, no crear chunks separados
             }
         },

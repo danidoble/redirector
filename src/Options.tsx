@@ -1,12 +1,7 @@
 import { ModeToggle } from './components/mode-toggle';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import {
-
-    RotateCcw,
-    XCircle,
-    Trash2
-} from 'lucide-react';
+import { RotateCcw, XCircle, Trash2 } from 'lucide-react';
 import { t } from './utils/i18n';
 import { getChrome } from './utils/chrome-mock';
 import type { Options as OptionsType, Rule, RedirectorMessage, RuleGroup } from './types/background';
@@ -25,12 +20,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger
 } from './components/ui/alert-dialog';
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger
-} from './components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './components/ui/tooltip';
 
 import { SettingsTab } from './components/tabs/SettingsTab';
 import { GroupsTab } from './components/tabs/GroupsTab';
@@ -145,10 +135,11 @@ export function Options({ mini = false }: { mini?: boolean }) {
                         ...rule,
                         id: crypto.randomUUID()
                     })),
-                    groups: newConfig.groups?.map((group: Omit<RuleGroup, 'id'>) => ({
-                        ...group,
-                        id: crypto.randomUUID()
-                    })) || []
+                    groups:
+                        newConfig.groups?.map((group: Omit<RuleGroup, 'id'>) => ({
+                            ...group,
+                            id: crypto.randomUUID()
+                        })) || []
                 };
 
                 setConfig(safeConfig);
@@ -229,8 +220,6 @@ export function Options({ mini = false }: { mini?: boolean }) {
         setConfig({ ...config, notifyEvent: checked });
     };
 
-
-
     const handleRuleEnabled = (checked: boolean, index: number): void => {
         setConfig(prev => {
             const newRules = [...prev.rules];
@@ -246,7 +235,6 @@ export function Options({ mini = false }: { mini?: boolean }) {
         }));
         toast.success(t('app_rule_deleted') || 'Regla eliminada');
     };
-
 
     /**
      * Internal function to save configuration with options
@@ -288,16 +276,16 @@ export function Options({ mini = false }: { mini?: boolean }) {
     const updateRule = (index: number, updates: Partial<Rule>, save: boolean = false): void => {
         // Calculate new state first
         const newHelper = () => {
-             const newRules = [...config.rules];
-             newRules[index] = { ...newRules[index], ...updates };
-             return { ...config, rules: newRules };
+            const newRules = [...config.rules];
+            newRules[index] = { ...newRules[index], ...updates };
+            return { ...config, rules: newRules };
         };
 
         const newConfig = newHelper();
         setConfig(newConfig);
 
         if (save) {
-             saveConfigInternal(newConfig, false);
+            saveConfigInternal(newConfig, false);
         }
     };
 
@@ -318,16 +306,16 @@ export function Options({ mini = false }: { mini?: boolean }) {
 
     const deleteGroup = (id: string): void => {
         const newGroups = (config.groups || []).filter(g => g.id !== id);
-        const newRules = config.rules.map(r => r.groupId === id ? { ...r, groupId: undefined } : r);
+        const newRules = config.rules.map(r => (r.groupId === id ? { ...r, groupId: undefined } : r));
         setConfig({ ...config, groups: newGroups, rules: newRules });
         toast.success(t('app_group_deleted') || 'Grupo eliminado');
     };
 
     const updateGroup = (id: string, updates: Partial<RuleGroup>, save: boolean = false): void => {
-        const newGroups = (config.groups || []).map(g => g.id === id ? { ...g, ...updates } : g);
+        const newGroups = (config.groups || []).map(g => (g.id === id ? { ...g, ...updates } : g));
         const newConfig = { ...config, groups: newGroups };
         setConfig(newConfig);
-        
+
         if (save) {
             saveConfigInternal(newConfig, false);
         }
@@ -377,11 +365,7 @@ export function Options({ mini = false }: { mini?: boolean }) {
         return (
             <TooltipProvider>
                 <div className="flex flex-col h-full bg-background">
-                    <MiniMode
-                        config={config}
-                        updateGroup={updateGroup}
-                        updateRule={updateRule}
-                    />
+                    <MiniMode config={config} updateGroup={updateGroup} updateRule={updateRule} />
                 </div>
             </TooltipProvider>
         );
@@ -403,7 +387,7 @@ export function Options({ mini = false }: { mini?: boolean }) {
                                     </p>
                                 </div>
                             </div>
-                             <div className="flex gap-2">
+                            <div className="flex gap-2">
                                 <Tooltip>
                                     <TooltipTrigger asChild>
                                         <div>
@@ -424,14 +408,14 @@ export function Options({ mini = false }: { mini?: boolean }) {
                                         <p>{t('app_theme_toogle') || 'Toggle theme'}</p>
                                     </TooltipContent>
                                 </Tooltip>
-                             </div>
+                            </div>
                         </div>
                     </div>
                 </header>
                 <Donation className="shrink-0 px-4 mb-0 mt-4" />
 
                 {/* Main Content */}
-                <main className="flex-grow container max-w-7xl mx-auto px-4 py-8 space-y-8">
+                <main className="grow container max-w-7xl mx-auto px-4 py-8 space-y-8">
                     {/* Tabs Navigation */}
                     <Tabs defaultValue="settings" className="w-full">
                         <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:w-auto">
@@ -442,9 +426,7 @@ export function Options({ mini = false }: { mini?: boolean }) {
                                     {config.rules.length}
                                 </Badge>
                             </TabsTrigger>
-                            <TabsTrigger value="groups">
-                                    {t('app_groups') || 'Grupos'}
-                            </TabsTrigger>
+                            <TabsTrigger value="groups">{t('app_groups') || 'Grupos'}</TabsTrigger>
                             <TabsTrigger value="advanced">{t('app_advanced') || 'Avanzado'}</TabsTrigger>
                         </TabsList>
 
@@ -504,7 +486,7 @@ export function Options({ mini = false }: { mini?: boolean }) {
                                     </p>
                                     <AlertDialog>
                                         <AlertDialogTrigger asChild>
-                                            <Button variant="destructive" disabled={saving} className='w-full'>
+                                            <Button variant="destructive" disabled={saving} className="w-full">
                                                 <RotateCcw className="w-4 h-4 mr-2" />
                                                 {t('app_reset_btn') || 'Restablecer'}
                                             </Button>
@@ -543,7 +525,7 @@ export function Options({ mini = false }: { mini?: boolean }) {
                                     </p>
                                     <AlertDialog>
                                         <AlertDialogTrigger asChild>
-                                            <Button variant="destructive" disabled={saving} className='w-full'>
+                                            <Button variant="destructive" disabled={saving} className="w-full">
                                                 <XCircle className="w-4 h-4 mr-2" />
                                                 {t('app_clear_rules_btn') || 'Limpiar reglas'}
                                             </Button>

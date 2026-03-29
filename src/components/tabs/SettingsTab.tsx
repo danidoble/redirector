@@ -1,10 +1,4 @@
-
-import {
-    CheckCircle2,
-    Download,
-    Upload,
-    Save
-} from 'lucide-react';
+import { CheckCircle2, Download, Upload, Save } from 'lucide-react';
 import { t } from '../../utils/i18n';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -12,11 +6,7 @@ import { Label } from '../../components/ui/label';
 import { Switch } from '../../components/ui/switch';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 import { Separator } from '../../components/ui/separator';
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger
-} from '../../components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../components/ui/tooltip';
 import type { ConfigState } from '../../Options';
 import type { RefObject } from 'react';
 
@@ -64,16 +54,11 @@ export function SettingsTab({
                             </Label>
                             <p className="text-sm text-muted-foreground">
                                 {config.enabled
-                                    ? t('app_extension_enabled_desc') ||
-                                      'La extensión está activa y redirigiendo URLs'
+                                    ? t('app_extension_enabled_desc') || 'La extensión está activa y redirigiendo URLs'
                                     : t('app_extension_disabled_desc') || 'La extensión está desactivada'}
                             </p>
                         </div>
-                        <Switch
-                            id="enabled"
-                            checked={config.enabled}
-                            onCheckedChange={handleEnabledChange}
-                        />
+                        <Switch id="enabled" checked={config.enabled} onCheckedChange={handleEnabledChange} />
                     </div>
 
                     <Separator />
@@ -102,15 +87,10 @@ export function SettingsTab({
                                 {t('app_notify_event') || 'Notificaciones'}
                             </Label>
                             <p className="text-sm text-muted-foreground">
-                                {t('app_notify_event_desc') ||
-                                    'Mostrar notificación cuando se redirija una URL'}
+                                {t('app_notify_event_desc') || 'Mostrar notificación cuando se redirija una URL'}
                             </p>
                         </div>
-                        <Switch
-                            id="notifications"
-                            checked={config.notifyEvent}
-                            onCheckedChange={handleNotifyChange}
-                        />
+                        <Switch id="notifications" checked={config.notifyEvent} onCheckedChange={handleNotifyChange} />
                     </div>
                 </CardContent>
             </Card>
@@ -130,9 +110,7 @@ export function SettingsTab({
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {/* Import */}
                         <div className="space-y-2">
-                            <Label htmlFor="import-file">
-                                {t('app_import_data') || 'Importar Configuración'}
-                            </Label>
+                            <Label htmlFor="import-file">{t('app_import_data') || 'Importar Configuración'}</Label>
                             <div className="flex gap-2">
                                 <Input
                                     id="import-file"
@@ -162,12 +140,7 @@ export function SettingsTab({
                         {/* Export */}
                         <div className="space-y-2">
                             <Label>{t('app_export_data') || 'Exportar Configuración'}</Label>
-                            <Button
-                                variant="outline"
-                                className="w-full"
-                                disabled={saving}
-                                onClick={exportConfig}
-                            >
+                            <Button variant="outline" className="w-full" disabled={saving} onClick={exportConfig}>
                                 <Download className="w-4 h-4 mr-2" />
                                 {t('app_export_btn') || 'Exportar'}
                             </Button>

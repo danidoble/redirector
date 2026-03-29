@@ -72,7 +72,10 @@ export function RuleForm({ initialRule, config, onSave, onCancel }: RuleFormProp
                             {config.groups?.map(g => (
                                 <SelectItem key={g.id} value={g.id}>
                                     <div className="flex items-center gap-2">
-                                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: g.color }}></div>
+                                        <div
+                                            className="w-3 h-3 rounded-full"
+                                            style={{ backgroundColor: g.color }}
+                                        ></div>
                                         {g.name}
                                     </div>
                                 </SelectItem>
@@ -153,31 +156,37 @@ export function RuleForm({ initialRule, config, onSave, onCancel }: RuleFormProp
 
             {/* Test URL Section */}
             <div className="grid gap-2 pt-2 border-t">
-                <Label htmlFor="testUrl" className="text-xs text-muted-foreground">{t('app_test_match') || 'Test Rule Match'}</Label>
+                <Label htmlFor="testUrl" className="text-xs text-muted-foreground">
+                    {t('app_test_match') || 'Test Rule Match'}
+                </Label>
                 <div className="flex gap-2 items-center">
                     <Input
                         id="testUrl"
-                        placeholder={t('placeholder_test_url') || 'Enter test URL...'} 
+                        placeholder={t('placeholder_test_url') || 'Enter test URL...'}
                         value={rule.testUrl || ''}
-                        onChange={(e) => handleChange('testUrl', e.target.value)}
+                        onChange={e => handleChange('testUrl', e.target.value)}
                         className="h-9 text-sm"
                     />
                     {rule.testUrl && (
-                        <div className={`text-xs px-3 py-1.5 rounded-md font-bold shrink-0 items-center flex ${
-                            matchRule(rule, rule.testUrl) 
-                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-900' 
-                                : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-900'
-                        }`}>
-                            {matchRule(rule, rule.testUrl) ? (t('app_match') || 'MATCH') : (t('app_no_match') || 'NO MATCH')}
+                        <div
+                            className={`text-xs px-3 py-1.5 rounded-md font-bold shrink-0 items-center flex ${
+                                matchRule(rule, rule.testUrl)
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-900'
+                                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-900'
+                            }`}
+                        >
+                            {matchRule(rule, rule.testUrl)
+                                ? t('app_match') || 'MATCH'
+                                : t('app_no_match') || 'NO MATCH'}
                         </div>
                     )}
                 </div>
                 {rule.testUrl && matchRule(rule, rule.testUrl) && (
                     <div className="mt-1 p-3 rounded-md bg-muted text-sm break-all border">
-                        <span className="font-semibold text-muted-foreground select-none block text-xs mb-1">{t('app_test_result') || 'Result:'}</span>
-                        <div className="font-mono text-primary">
-                            {matchRule(rule, rule.testUrl)}
-                        </div>
+                        <span className="font-semibold text-muted-foreground select-none block text-xs mb-1">
+                            {t('app_test_result') || 'Result:'}
+                        </span>
+                        <div className="font-mono text-primary">{matchRule(rule, rule.testUrl)}</div>
                     </div>
                 )}
             </div>
@@ -186,9 +195,7 @@ export function RuleForm({ initialRule, config, onSave, onCancel }: RuleFormProp
                 <Button variant="outline" onClick={onCancel}>
                     {t('app_cancel') || 'Cancel'}
                 </Button>
-                <Button onClick={() => onSave(rule)}>
-                    {t('app_save') || 'Save'}
-                </Button>
+                <Button onClick={() => onSave(rule)}>{t('app_save') || 'Save'}</Button>
             </div>
         </div>
     );

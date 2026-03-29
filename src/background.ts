@@ -56,7 +56,7 @@ const defaultSettings: Settings = {
                 enabled: true,
                 collapsed: false
             }
-        ] 
+        ]
     }
 };
 
@@ -65,12 +65,22 @@ const config: Config = {
     openNewTab: false,
     notifyEvent: true,
     rules: [],
-    groups: [],
-    lastTabId: 0
+    groups: []
 };
 
+// session-storage helpers (survive worker restarts)
+
+const addProcessedTab = (tabId: number) => chrome.storage.session.set({ [`pt_${tabId}`]: true });
+
+const hasProcessedTab = async (tabId: number): Promise<boolean> => {
+    const r = await chrome.storage.session.get(`pt_${tabId}`);
+    return !!r[`pt_${tabId}`];
+};
+
+const removeProcessedTab = (tabId: number) => chrome.storage.session.remove(`pt_${tabId}`);
+
 /**
- * Asigna IDs únicos a las reglas que no tienen uno
+ * Asign unique IDs to rules that don't have one
  */
 const assignRuleIds = (rules: Rule[]): void => {
     rules.forEach(rule => {
@@ -81,7 +91,7 @@ const assignRuleIds = (rules: Rule[]): void => {
 };
 
 /**
- * Maneja la instalación inicial de la extensión
+ * Manage initial extension installation
  */
 const handleInstall = async (): Promise<void> => {
     assignRuleIds(defaultSettings.options.rules);
@@ -91,7 +101,7 @@ const handleInstall = async (): Promise<void> => {
 };
 
 /**
- * Maneja la actualización de la extensión
+ * Manage extension update
  */
 const handleUpdate = async (): Promise<void> => {
     const data = (await chrome.storage.sync.get('options')) as StorageData;
@@ -105,29 +115,29 @@ const handleUpdate = async (): Promise<void> => {
 
     // Migration: If groups are missing or empty, inject the default group AND move rules to it
     if (!data.options.groups || data.options.groups.length === 0) {
-         // Create a merged object
-         const migratedOptions: Options = {
-             ...data.options,
-             groups: defaultSettings.options.groups
-         };
-         
-         const migratedSettings: Settings = {
-             options: migratedOptions
-         };
-         
-         // If there are existing rules, safeguard them and assign them to default group
-         if (data.options.rules && data.options.rules.length > 0) {
-             migratedSettings.options.rules = data.options.rules.map(r => ({
-                 ...r,
-                 id: r.id || crypto.randomUUID(), // Ensure ID exists
-                 name: r.name || 'My Rule',
-                 groupId: 'default' // Assign to default group
-             }));
-         }
+        // Create a merged object
+        const migratedOptions: Options = {
+            ...data.options,
+            groups: defaultSettings.options.groups
+        };
 
-         await chrome.storage.sync.set(migratedSettings);
-         console.log('Migrated settings: Added default group and moved rules to it');
-         return;
+        const migratedSettings: Settings = {
+            options: migratedOptions
+        };
+
+        // If there are existing rules, safeguard them and assign them to default group
+        if (data.options.rules && data.options.rules.length > 0) {
+            migratedSettings.options.rules = data.options.rules.map(r => ({
+                ...r,
+                id: r.id || crypto.randomUUID(), // Ensure ID exists
+                name: r.name || 'My Rule',
+                groupId: 'default' // Assign to default group
+            }));
+        }
+
+        await chrome.storage.sync.set(migratedSettings);
+        console.log('Migrated settings: Added default group and moved rules to it');
+        return;
     }
 
     if (data.options?.rules?.length > 0) {
@@ -142,27 +152,27 @@ const handleUpdate = async (): Promise<void> => {
 
         // Migrate existing rules to include 'mode' and 'name' if missing
         const migratedExistingRules = existingRules.map(r => {
-             const updates: Partial<Rule> = {};
-             if (!r.mode) {
-                  updates.mode = r.regex ? 'regex' : 'static';
-             }
-             if (!r.name) {
-                  updates.name = 'My Rule';
-             }
-             return { ...r, ...updates };
+            const updates: Partial<Rule> = {};
+            if (!r.mode) {
+                updates.mode = r.regex ? 'regex' : 'static';
+            }
+            if (!r.name) {
+                updates.name = 'My Rule';
+            }
+            return { ...r, ...updates };
         });
 
         // Migrate new rules (should be correct already, but safe guard)
         const migratedNewRules = newRules.map(r => {
             const updates: Partial<Rule> = {};
             if (!r.mode) {
-                 updates.mode = r.regex ? 'regex' : 'static';
+                updates.mode = r.regex ? 'regex' : 'static';
             }
             if (!r.name) {
-                 updates.name = 'My Rule';
+                updates.name = 'My Rule';
             }
             return { ...r, ...updates };
-       });
+        });
 
         const mergedData: Settings = {
             ...syncData,
@@ -179,7 +189,7 @@ const handleUpdate = async (): Promise<void> => {
     }
 };
 
-chrome.runtime.onInstalled.addListener(async details => {
+const onInstalled = async (details: chrome.runtime.InstalledDetails): Promise<void> => {
     if (details.reason === 'install') {
         await handleInstall();
         return;
@@ -188,40 +198,64 @@ chrome.runtime.onInstalled.addListener(async details => {
     if (details.reason === 'update') {
         await handleUpdate();
     }
-});
+};
+
+chrome.runtime.onInstalled.addListener(onInstalled);
 
 /**
- * Maneja la redirección cuando una pestaña se actualiza
+ * Manage redirection when a tab is updated
  */
 const handleTabUpdate = async (url: string, tabId: number): Promise<void> => {
-    const newUrl = matchUrl(url);
-    if (!newUrl) return;
-
     if (!config.openNewTab) {
-        config.lastTabId = tabId;
-        await chrome.tabs.update(tabId, { url: newUrl });
+        // Persist lastTabId in session storage so it survives a worker restart
+        await chrome.storage.session.set({ lastTabId: tabId });
+        await chrome.tabs.update(tabId, { url });
     } else {
-        await chrome.tabs.create({ url: newUrl });
+        await chrome.tabs.create({ url });
         notify();
     }
 };
 
-chrome.tabs.onUpdated.addListener(async (tabId, change, tab) => {
+const onTabUpdated: Parameters<typeof chrome.tabs.onUpdated.addListener>[0] = async (tabId, change, tab) => {
+    // Guard against cold-start: ensure rules are loaded before processing
+    if (!config.rules?.length) await loadOptions();
+
     if (!config.enabled) return;
-
     const url = tab.url || change.url;
-    if (change.status === 'loading' && url) {
-        await handleTabUpdate(url, tabId);
+    if (!url) return;
+    // if (url.startsWith('chrome://') || url.startsWith('chrome-extension://') || url.startsWith('about:')) {
+    //     return;
+    // }
+
+    if (change.status === 'loading') {
+        // Use session storage instead of in-memory Set so state survives worker restarts
+        if (await hasProcessedTab(tabId)) return;
+
+        const newUrl = matchUrl(url);
+        if (!newUrl) return;
+        if (newUrl === url) return;
+
+        await addProcessedTab(tabId);
+
+        await handleTabUpdate(newUrl, tabId);
     }
 
-    if (change.status === 'complete' && tabId === config.lastTabId) {
-        notify();
-        config.lastTabId = 0;
+    if (change.status === 'complete') {
+        // Clean up session storage entry for this tab
+        await removeProcessedTab(tabId);
+
+        const { lastTabId } = await chrome.storage.session.get('lastTabId');
+        if (tabId === lastTabId) {
+            notify();
+            await chrome.storage.session.remove('lastTabId');
+        }
     }
-});
+};
+
+chrome.tabs.onUpdated.addListener(onTabUpdated);
 
 /**
- * Sincroniza las opciones con la configuración local
+ * Sync options with local configuration
  */
 const syncOptions = (options: Options): void => {
     Object.assign(config, {
@@ -234,7 +268,7 @@ const syncOptions = (options: Options): void => {
 };
 
 /**
- * Reinicia las reglas a los valores por defecto
+ * Reset rules to default values
  */
 const resetRules = async (): Promise<void> => {
     Object.assign(config, defaultSettings.options);
@@ -249,7 +283,11 @@ const resetRules = async (): Promise<void> => {
     }
 };
 
-chrome.runtime.onMessage.addListener((message: RedirectorMessage, _sender, _sendResponse) => {
+const onMessage = (
+    message: RedirectorMessage,
+    _sender: chrome.runtime.MessageSender,
+    _sendResponse: (response?: unknown) => void
+): void => {
     console.debug({ message, _sender, _sendResponse });
 
     if (message.type === 'syncOptions') {
@@ -260,10 +298,12 @@ chrome.runtime.onMessage.addListener((message: RedirectorMessage, _sender, _send
     if (message.type === 'resetRules') {
         resetRules().catch(error => console.error('Error resetting rules:', error));
     }
-});
+};
+
+chrome.runtime.onMessage.addListener(onMessage);
 
 /**
- * Carga las opciones desde el almacenamiento
+ * Loads options from storage
  */
 const loadOptions = async (): Promise<void> => {
     const data = (await chrome.storage.sync.get('options')) as StorageData;
@@ -279,7 +319,7 @@ const loadOptions = async (): Promise<void> => {
 };
 
 /**
- * Verifica si una URL coincide con alguna regla y retorna la URL de destino
+ * Verifies if a URL matches any rule and returns the destination URL
  */
 const matchUrl = (url: string): string | false => {
     if (!config.rules?.length || !url) return false;
@@ -288,8 +328,8 @@ const matchUrl = (url: string): string | false => {
         if (!rule.enabled) continue;
 
         if (rule.groupId && config.groups) {
-             const group = config.groups.find(g => g.id === rule.groupId);
-             if (group && !group.enabled) continue;
+            const group = config.groups.find(g => g.id === rule.groupId);
+            if (group && !group.enabled) continue;
         }
 
         const result = matchRule(rule, url);
@@ -300,7 +340,7 @@ const matchUrl = (url: string): string | false => {
 };
 
 /**
- * Muestra una notificación al usuario
+ * Shows a notification to the user
  */
 const notify = (): void => {
     if (!config.notifyEvent) return;

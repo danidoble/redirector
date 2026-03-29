@@ -2,8 +2,8 @@
     "name": "__MSG_app_name__",
     "description": "__MSG_app_description__",
     "short_name": "Redirector",
-    "version_name": "v1.1.0",
-    "version": "1.1.0",
+    "version_name": "v1.1.1",
+    "version": "1.1.1",
     "default_locale": "en",
     "manifest_version": 3,
     "author": "Daniel Sandoval <danidoble>",
@@ -17,7 +17,7 @@
         "page": "src/options.html",
         "open_in_tab": true
     },
-    "permissions": ["notifications", "storage", "tabs", "background"],
+    "permissions": ["notifications", "storage", "tabs"],
     "host_permissions": ["http://*/", "https://*/"],
     "icons": {
         "16": "img/icon-16.png",

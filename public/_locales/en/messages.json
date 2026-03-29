@@ -254,7 +254,7 @@
     "app_search_placeholder": {
         "message": "Search rules..."
     },
-    "app_rule_color":{
+    "app_rule_color": {
         "message": "Color"
     },
     "app_rule_label_enabled": {

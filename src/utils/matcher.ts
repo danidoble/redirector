@@ -47,33 +47,36 @@ export const matchRule = (rule: Rule, url: string): string | null => {
                 const match = url.match(pattern);
                 if (match && match.groups) {
                     let newDest = dest;
-                    
+
                     // Replace {{id}} or {{search.groups.id}} with value
                     for (const [key, value] of Object.entries(match.groups)) {
                         newDest = newDest.replace(new RegExp(`{{${key}}}|{{search\\.groups\\.${key}}}`, 'g'), value);
                     }
-                    
+
                     // Replace standard named groups with '$<name>' for the final replace call
                     newDest = newDest.replace(/{{(?:search\.groups\.)?([a-zA-Z0-9_]+)}}/g, '$<$1>');
 
                     if (shouldDecode) {
-                         const finalUrl = url.replace(pattern, (...args) => {
-                             const groups = args.length > 2 && typeof args[args.length - 1] === 'object' ? args[args.length - 1] : {};
-                             
-                             return newDest.replace(/\$<([a-zA-Z0-9_]+)>|\$(\d+)/g, (m, name, nStr) => {
-                                  if (name) {
-                                      const val = (groups as Record<string, string>)[name];
-                                      return val !== undefined ? decodeURIComponent(val) : m;
-                                  }
-                                  if (nStr) {
-                                       const n = parseInt(nStr, 10);
-                                       const val = args[n];
-                                       return val !== undefined ? decodeURIComponent(val) : m;
-                                  }
-                                  return m;
-                             });
-                         });
-                         if (url !== finalUrl) return finalUrl;
+                        const finalUrl = url.replace(pattern, (...args) => {
+                            const groups =
+                                args.length > 2 && typeof args[args.length - 1] === 'object'
+                                    ? args[args.length - 1]
+                                    : {};
+
+                            return newDest.replace(/\$<([a-zA-Z0-9_]+)>|\$(\d+)/g, (m, name, nStr) => {
+                                if (name) {
+                                    const val = (groups as Record<string, string>)[name];
+                                    return val !== undefined ? decodeURIComponent(val) : m;
+                                }
+                                if (nStr) {
+                                    const n = parseInt(nStr, 10);
+                                    const val = args[n];
+                                    return val !== undefined ? decodeURIComponent(val) : m;
+                                }
+                                return m;
+                            });
+                        });
+                        if (url !== finalUrl) return finalUrl;
                     } else {
                         const finalUrl = url.replace(pattern, newDest);
                         if (url !== finalUrl) return finalUrl;
